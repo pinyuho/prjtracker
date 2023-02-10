@@ -3,7 +3,7 @@ import Task from "./Task";
 
 const TaskList = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-11/12 md:w-[910px] mx-8 my-4 self-center">
+    <div className="mx-8 my-8 grid w-11/12 grid-cols-1 gap-4 self-center sm:grid-cols-2 md:w-[910px] md:grid-cols-3">
       <Task />
       <Task />
       <Task />

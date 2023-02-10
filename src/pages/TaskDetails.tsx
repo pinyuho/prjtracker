@@ -1,12 +1,13 @@
 import React from "react";
 
 import Header from "../components/Header";
+import TaskView from "../components/TaskView";
 
 const TaskDetails = () => {
   return (
     <div className="flex flex-col">
       <Header />
-      <div className="text-white">TASK DETAILS</div>
+      <TaskView />
     </div>
   );
 };
