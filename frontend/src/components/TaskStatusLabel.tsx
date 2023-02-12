@@ -12,7 +12,7 @@ const TaskStatusLabel = ({ status, isButton }: TaskStatusLabelProps) => {
     case "open":
       return (
         <div
-          className={`my-1 flex h-5 w-16 select-none flex-row rounded-md bg-[#686239] p-1 ${
+          className={`my-1 flex h-5 w-16 select-none flex-row truncate rounded-md bg-[#686239] p-1 ${
             isButton && `hover:cursor-pointer hover:bg-[#91884e]`
           }`}
         >
@@ -25,12 +25,12 @@ const TaskStatusLabel = ({ status, isButton }: TaskStatusLabelProps) => {
     case "in-progress":
       return (
         <div
-          className={`my-1 flex h-5 w-24 select-none flex-row rounded-md bg-[#314c7b] p-1 ${
+          className={`my-1 flex h-5 w-16 select-none flex-row  rounded-md bg-[#314c7b] p-0 sm:w-24 sm:p-1 ${
             isButton && `hover:cursor-pointer hover:bg-[#3f629e]`
           }`}
         >
           <div className="mx-1 h-1.5 w-1.5 self-center rounded-full bg-blue-400"></div>
-          <div className="mx-1 h-5 self-center text-xs font-medium leading-5 text-white">
+          <div className="mx-1 h-5 self-center truncate text-ellipsis text-xs font-medium leading-5 text-white">
             In Progress
           </div>
         </div>
@@ -38,7 +38,7 @@ const TaskStatusLabel = ({ status, isButton }: TaskStatusLabelProps) => {
     default: // Done
       return (
         <div
-          className={`my-1 flex h-5 w-16 select-none flex-row rounded-md bg-[#3d7b31aa] p-1 ${
+          className={`my-1 flex h-5 w-16 select-none flex-row truncate rounded-md bg-[#3d7b31aa] p-1 ${
             isButton && `hover:cursor-pointer hover:bg-[#4fa03f77]`
           }`}
         >

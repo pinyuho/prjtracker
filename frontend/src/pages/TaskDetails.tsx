@@ -6,7 +6,7 @@ import TaskView from "../components/TaskView";
 const TaskDetails = () => {
   return (
     <div className="flex flex-col">
-      <Header />
+      <Header isLoggedIn={true} />
       <TaskView />
     </div>
   );

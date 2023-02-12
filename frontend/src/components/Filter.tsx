@@ -3,24 +3,20 @@ import React, { useState, useRef } from "react";
 import { IconContext } from "react-icons";
 import { TiDelete } from "react-icons/ti";
 
-import { useOnClickOutside } from "usehooks-ts";
-import useOnHover from "../hooks/useOnHover";
+import useDropdown from "../hooks/useDropdown";
 
 import TaskStatusLabel, { TaskStatus } from "./TaskStatusLabel";
 
 type TaskFilter = TaskStatus | "";
 
 const Filter = () => {
-  const ref = useRef(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [taskFilter, setTaskFilter] = useState<TaskFilter>("");
+  const [ref, isDropdownOpen, setIsDropdownOpen] = useDropdown();
 
   const handleDropdownClick = (taskStatus: TaskStatus) => {
     setTaskFilter(taskStatus);
     setIsDropdownOpen(false);
   };
-
-  useOnClickOutside(ref, () => setIsDropdownOpen(false));
 
   return (
     <div ref={ref}>
@@ -34,7 +30,9 @@ const Filter = () => {
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           {taskFilter === "" ? (
-            <div className="flex w-[160px] justify-center p-0.5">-</div>
+            <div className="flex w-[110px] justify-center p-0.5 sm:w-[160px]">
+              -
+            </div>
           ) : (
             <div className="p-0.5 pl-3">
               <TaskStatusLabel status={taskFilter} isButton={false} />

@@ -7,7 +7,7 @@ import TaskList from "../components/TaskList";
 const Home = () => {
   return (
     <div className="flex flex-col">
-      <Header />
+      <Header isLoggedIn={true} />
       <ActionBar />
       <TaskList />
     </div>
