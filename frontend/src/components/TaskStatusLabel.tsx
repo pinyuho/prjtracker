@@ -1,6 +1,6 @@
 import React from "react";
 
-export type TaskStatus = "open" | "in-progress" | "done";
+import { TaskStatus } from "../types";
 
 export interface TaskStatusLabelProps {
   status: TaskStatus;
@@ -25,7 +25,7 @@ const TaskStatusLabel = ({ status, isButton }: TaskStatusLabelProps) => {
     case "in-progress":
       return (
         <div
-          className={`my-1 flex h-5 w-16 select-none flex-row  rounded-md bg-[#314c7b] p-0 sm:w-24 sm:p-1 ${
+          className={`my-1 flex h-5 w-24 select-none  flex-row rounded-md bg-[#314c7b] p-0 sm:p-1 ${
             isButton && `hover:cursor-pointer hover:bg-[#3f629e]`
           }`}
         >

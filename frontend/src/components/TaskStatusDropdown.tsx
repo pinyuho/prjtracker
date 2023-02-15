@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 
-import TaskStatusLabel, { TaskStatus } from "./TaskStatusLabel";
+import { TaskStatus } from "../types";
+import TaskStatusLabel from "./TaskStatusLabel";
 
 const TaskStatusDropdown = () => {
   return <div className=""></div>;

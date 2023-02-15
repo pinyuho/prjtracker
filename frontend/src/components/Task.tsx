@@ -10,15 +10,17 @@ import useOnHover from "../hooks/useOnHover";
 
 import TaskStatusLabel from "./TaskStatusLabel";
 
-const Task = () => {
+import { ITask as TaskProps } from "../types";
+
+const Task = ({ id, title, status, createdTime, body }: TaskProps) => {
   const navigate = useNavigate();
 
   const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
 
   return (
     <div
-      className="h-max w-full rounded-md bg-zinc-800 p-4 drop-shadow-md hover:cursor-pointer 
-    hover:bg-zinc-700 md:w-72"
+      className="h-max min-h-[188px] w-full rounded-md bg-zinc-800 p-4 drop-shadow-md 
+    hover:cursor-pointer hover:bg-zinc-700 md:w-full"
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
       onClick={() => {
@@ -26,15 +28,15 @@ const Task = () => {
       }}
     >
       {/* Task Header */}
-      <div className="flex h-6 justify-between">
+      <div className="flex h-max justify-between">
         {/* Title */}
-        <div className="pr-2 text-left align-bottom font-mono font-medium text-white">
-          title
+        <div className="mt-0.5 h-max w-11/12 text-left font-mono font-medium leading-6 text-white line-clamp-2">
+          {title}
         </div>
 
         {/* Edit & Delete Icons. Only show when hovering on tasks. */}
         {onHover && (
-          <div>
+          <div className="fixed right-3 w-16">
             <button className="h-6 rounded-l bg-zinc-800 px-1 align-middle hover:bg-zinc-300">
               <IconContext.Provider
                 value={{ color: "grey", className: "global-class-name" }}
@@ -54,14 +56,9 @@ const Task = () => {
         )}
       </div>
 
-      {/* Task Label */}
-      <div className="my-1 flex w-full justify-start">
-        <TaskStatusLabel status="open" isButton={true} />
-      </div>
-
       {/* Task Created Time */}
-      <div className=" flex w-full justify-start ">
-        <div className="mr-1 self-center opacity-60">
+      <div className="flex w-full justify-start ">
+        <div className="my-1 mr-1 self-center opacity-60">
           <IconContext.Provider
             value={{ color: "grey", className: "global-class-name" }}
           >
@@ -69,22 +66,18 @@ const Task = () => {
           </IconContext.Provider>
         </div>
         <div className="self-center text-sm text-zinc-500">
-          January 18, 4:04 AM
+          <>{createdTime}</>
         </div>
       </div>
 
+      {/* Task Label */}
+      <div className="my-1 flex w-full justify-start">
+        <TaskStatusLabel status="open" isButton={true} />
+      </div>
+
       {/* Task Body */}
-      <div className="mt-1 text-left text-sm leading-6 text-zinc-300 line-clamp-2">
-        Recently, Google announced it wasew laying off approximately 6% of its
-        workforce (or 12,000 people). This brings it in line with most of the
-        rest of the tech industry. The reason given by a publicly contrite CEO
-        was that they’d overhired in the boom following the COVID pandemic and
-        that now they had to address it but they were oh-so-sorry and took full
-        responsibility. Like many others my first reaction to this rationale was
-        “bullshit”. I imagine the same is true for the people at Meta, Amazon,
-        Microsoft et al going through this. I spent 10 years at Google so I have
-        some views on how these things come about and they don’t reflect well on
-        the people running the company.
+      <div className="mt-1 mr-3 text-left text-sm leading-6 text-zinc-300 line-clamp-2">
+        {body}
       </div>
     </div>
   );

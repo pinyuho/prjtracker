@@ -3,13 +3,9 @@ import React from "react";
 import { IconContext } from "react-icons";
 import { TbArrowCurveRight } from "react-icons/tb";
 
-import Header from "../components/Header";
-
 const Login = () => {
   return (
     <div className="flex flex-col">
-      <Header isLoggedIn={false} />
-
       <IconContext.Provider
         value={{ color: "white", className: "global-class-name" }}
       >

@@ -13,7 +13,7 @@ const SearchBox = () => {
 
   return (
     <div
-      className="my-2 mr-2 flex h-8 w-full flex-row rounded-r-lg bg-zinc-800 opacity-80
+      className="my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r-md bg-zinc-800 opacity-80
       shadow-sm shadow-zinc-700 hover:cursor-text hover:bg-zinc-700"
     >
       {/* Input Field */}

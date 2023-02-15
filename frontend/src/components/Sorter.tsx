@@ -9,10 +9,10 @@ const Sorter = () => {
   const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
 
   return (
-    <div>
+    <div className="self-center">
       <button
-        className="m-2 mr-3 flex h-8 w-12 justify-center rounded-lg bg-zinc-800 text-zinc-300 opacity-80 
-     outline-none ring-0 hover:bg-zinc-700"
+        className="ml-1 flex h-8 w-12 justify-center rounded-md bg-zinc-800 text-zinc-300 opacity-80 
+     shadow-sm shadow-zinc-700 outline-none ring-0 hover:bg-zinc-700 "
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
         onClick={() => setIsDescending(!isDescending)}
@@ -24,7 +24,7 @@ const Sorter = () => {
         )}
       </button>
       {onHover && (
-        <div className="absolute -m-[62px] h-6 w-max pl-8 text-xs text-zinc-500 opacity-20">
+        <div className="absolute -m-[55px] h-6 w-max pl-4 text-xs text-zinc-500 opacity-30">
           Sort by Creation time
         </div>
       )}
