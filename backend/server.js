@@ -4,7 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { dbConnection } from "./mongo.js";
 
-import appRoutes from "./routes/index.js";
+import Routes from "./routes/index.js";
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
-appRoutes(app);
+Routes(app);
 
 dbConnection.once("open", () => {
   console.log("Connected to MongoDB.");

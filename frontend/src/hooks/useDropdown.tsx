@@ -1,6 +1,6 @@
 import { useRef, useState, LegacyRef, Dispatch, SetStateAction } from "react";
 
-import { useOnClickOutside } from "usehooks-ts";
+import useOnClickOutside from "./useOnClickOutside";
 
 function useDropdown(): [
   LegacyRef<HTMLDivElement>,

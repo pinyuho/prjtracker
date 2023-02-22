@@ -1,7 +1,7 @@
 import database from "./database.js";
-import githubAuth from "./githubAuth.js";
+import github from "./github.js";
 
 export default function (app) {
   app.use("/db", database);
-  app.use("/github", githubAuth);
+  app.use("/github", github);
 }

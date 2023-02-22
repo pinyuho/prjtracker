@@ -1,41 +1,66 @@
 import express from "express";
-
-// task model
 import { Task } from "../models/Task.js";
+
+import qs from "qs";
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-  const newTask = new Task(req.body);
+router.post("/tasks", async (req, res) => {
+  const tasks = req.body;
+  const bulkUpdateOps = tasks.map((task) => {
+    return {
+      updateOne: {
+        filter: { issueId: task.issueId },
+        update: { $setOnInsert: { status: "open" } },
+        upsert: true,
+      },
+    };
+  });
 
-  let response = {
-    message: "",
-  };
-
-  await newTask
-    .save()
-    .then((response.message = `Adding (${req.body.title})`))
-    .catch((err) => res.status(400).json("Error! " + err));
-
-  res.json(response);
+  await Task.bulkWrite(bulkUpdateOps)
+    .then((response) => {
+      res.json(response);
+    })
+    .catch((err) => {
+      console.error({ err });
+    });
 });
 
-router.get("/", async (req, res) => {
-  let response = {
-    tasks: [],
-    message: "",
-  };
+router.patch("/task/:issueId", async (req, res) => {
+  await Task.findOneAndUpdate(
+    { issueId: req.params.issueId },
+    { $set: { status: req.body.status } },
+    { upsert: true }
+  )
+    .then((response) => res.json(response))
+    .catch((err) => res.status(400).json({ err }));
+});
 
-  await Task.find()
-    .then(function (Tasks) {
+router.get("/task/:issueId", async (req, res) => {
+  await Task.find({ issueId: req.params.issueId })
+    .then((Tasks) => {
       if (Tasks.length !== 0) {
-        response.tasks = Tasks;
+        res.json({
+          status: Tasks[0].status,
+          found: true,
+        });
       } else {
-        response.message = `not found!`;
+        res.json({
+          status: "",
+          found: false, // for adding new issues
+        });
       }
     })
-    .catch((err) => res.status(400).json("Error! " + err));
+    .catch((err) => res.status(400).json({ err }));
+});
 
-  res.json(response);
+router.get("/tasks/:issueIds", async (req, res) => {
+  const issueIdsObj = qs.parse(req.params.issueIds);
+  const issueIds = Object.values(issueIdsObj);
+  await Task.find({ issueId: { $in: issueIds } })
+    .then((response) => {
+      res.json(response);
+    })
+    .catch((err) => res.status(400).json({ err }));
 });
 
 export default router;

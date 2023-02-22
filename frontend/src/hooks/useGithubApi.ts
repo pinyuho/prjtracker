@@ -1,61 +1,49 @@
-import {
-  useState,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-  useContext
-} from "react";
-import { UserContext } from "../context/UserContext";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 
 import { AxiosError } from "axios";
 import agent from "../agent";
 
-interface User {
-  login: string; // username
-  avatar_url: string;
-}
-
-interface Issue {
-  id: number;
-  title: string;
-  created_at: Date;
-  body: string;
-  state: "open" | "closed"; // default: "open"
-  labels: string[];
-}
-
-interface Repo {
-  id: number;
-  name: string;
-}
+import { IIssue, IssueStatus } from "../types";
 
 const useGithubApi = (): [
   boolean,
   Dispatch<SetStateAction<boolean>>,
   boolean,
   Dispatch<SetStateAction<boolean>>,
-  () => void,
-  User | undefined,
-  () => Promise<void>,
-  Issue[] | undefined,
-  () => Promise<void>,
-  Repo[] | undefined,
-  () => Promise<void>
+  () => void, // loginWithGithub
+  () => Promise<any>, // getUserData
+  () => Promise<any>, // getRepos
+  (username: string, repoName: string) => Promise<any>, // getIssues
+  (username: string, repoName: string, issueNumber: number) => Promise<any>, // getIssue
+  (
+    username: string,
+    repoName: string,
+    issueNumber: number,
+    title: string,
+    body: string
+  ) => Promise<any>, // updateIssue
+  (
+    username: string,
+    repoName: string,
+    issueNumber: number,
+    state: IssueStatus
+  ) => Promise<any>, // deleteIssue
+  (query: string) => Promise<any>, // searchIssues
+  (
+    username: string,
+    repoName: string,
+    title: string,
+    body: string
+  ) => Promise<any> // addIssue
 ] => {
   const [rerender, setRerender] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [userData, setUserData] = useState<User>();
-  const [issues, setIssues] = useState<Issue[]>([]);
-  const [repos, setRepos] = useState<Repo[]>([]);
-
-  const { username, setUsername, avatarUrl, setAvatarUrl } =
-    useContext(UserContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const codeParam = urlParams.get("code");
-    console.log(codeParam);
+    console.log("code param: ", codeParam);
 
     const getAccessToken = async () => {
       try {
@@ -93,35 +81,13 @@ const useGithubApi = (): [
     try {
       const { data } = await agent.get("/github/user", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}` // Bearer ACCESSTOKEN,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }
       });
       console.log("User data: ", data);
 
-      setUserData(data);
+      setLoading(false);
 
-      // Set User Context Value
-      setUsername(data.login);
-      setAvatarUrl(data.avatar_url);
-
-      setIsLoading(false);
-      return data;
-    } catch (error) {
-      const err = error as AxiosError;
-      console.log("error: ", err.response?.data);
-      return err.response?.data;
-    }
-  };
-
-  const getIssues = async () => {
-    try {
-      const { data } = await agent.get("/github/issues", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}` // Bearer ACCESSTOKEN,
-        }
-      });
-      console.log("Issues:", data);
-      setIssues(data);
       return data;
     } catch (error) {
       const err = error as AxiosError;
@@ -134,12 +100,167 @@ const useGithubApi = (): [
     try {
       const { data } = await agent.get("/github/repos", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}` // Bearer ACCESSTOKEN,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }
       });
       console.log("Repos:", data);
-      setRepos(data);
-      // setRepos([{ id: 2123, name: "jane" }]);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      const err = error as AxiosError;
+      console.log("error: ", err.response?.data);
+      return err.response?.data;
+    }
+  };
+
+  const getIssues = async (username: string, repoName: string) => {
+    try {
+      const { data } = await agent.get(
+        `/github/issues/${username}/${repoName}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+      console.log("Issues:", data);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      const err = error as AxiosError;
+      console.log("error: ", err.response?.data);
+      return err.response?.data;
+    }
+  };
+
+  const getIssue = async (
+    username: string,
+    repoName: string,
+    issueNumber: number
+  ) => {
+    try {
+      const { data } = await agent.get(
+        `/github/issues/${username}/${repoName}/${issueNumber}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+      console.log("Issue:", data);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      const err = error as AxiosError;
+      console.log("error: ", err.response?.data);
+      return err.response?.data;
+    }
+  };
+
+  const updateIssue = async (
+    username: string,
+    repoName: string,
+    issueNumber: number,
+    title: string,
+    body: string
+  ) => {
+    try {
+      const { data } = await agent.patch(
+        `/github/issues/${username}/${repoName}/${issueNumber}`,
+        {
+          title: title,
+          body: body
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+      console.log("Updated Issue:", data);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      const err = error as AxiosError;
+      console.log("error: ", err.response?.data);
+      return err.response?.data;
+    }
+  };
+
+  const deleteIssue = async (
+    username: string,
+    repoName: string,
+    issueNumber: number,
+    state: IssueStatus
+  ) => {
+    try {
+      const { data } = await agent.patch(
+        `/github/issues/${username}/${repoName}/${issueNumber}`,
+        {
+          state: state
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+      console.log("Deleted Issue:", data);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      const err = error as AxiosError;
+      console.log("error: ", err.response?.data);
+      return err.response?.data;
+    }
+  };
+
+  const searchIssues = async (query: string) => {
+    try {
+      const { data } = await agent.get(`/github/search/issues/${query}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          // Accept: "application/vnd.github.text-match+json" // FIXME: text-match hightlight
+        }
+      });
+      console.log("Searched Issue:", data);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      const err = error as AxiosError;
+      console.log("error: ", err.response?.data);
+      return err.response?.data;
+    }
+  };
+
+  const addIssue = async (
+    username: string,
+    repoName: string,
+    title: string,
+    body: string
+  ) => {
+    try {
+      const { data } = await agent.post(
+        `/github/issues/${username}/${repoName}`,
+        {
+          title: title,
+          body: body
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+      console.log("Added Issue:", data);
+      setLoading(false);
+
       return data;
     } catch (error) {
       const err = error as AxiosError;
@@ -151,15 +272,17 @@ const useGithubApi = (): [
   return [
     rerender,
     setRerender,
-    isLoading,
-    setIsLoading,
+    loading,
+    setLoading,
     loginWithGithub,
-    userData,
     getUserData,
-    issues,
+    getRepos,
     getIssues,
-    repos,
-    getRepos
+    getIssue,
+    updateIssue,
+    deleteIssue,
+    searchIssues,
+    addIssue
   ];
 };
 

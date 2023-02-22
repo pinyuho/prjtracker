@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
@@ -6,37 +6,33 @@ import Header from "./components/Header";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import TaskDetails from "./pages/TaskDetails";
+import RepoView from "./pages/RepoView";
+import TaskView from "./pages/TaskView";
 
-import { UserContext } from "./context/UserContext";
+import { useUserContext } from "./context/UserContext";
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const { username, avatarUrl } = useUserContext();
 
   return (
     <div className="App">
-      <UserContext.Provider
-        value={{ username, setUsername, avatarUrl, setAvatarUrl }}
-      >
-        <Header
-          isLoggedIn={localStorage.getItem("accessToken") ? true : false}
-        />
+      <Header isLoggedIn={localStorage.getItem("accessToken") ? true : false} />
 
-        <Routes>
-          <Route
-            path="/"
-            element={
-              username && avatarUrl ? <Home /> : <Navigate to="/login" />
-            }
-          />
-          <Route
-            path="/login"
-            element={!(username || avatarUrl) ? <Login /> : <Navigate to="/" />}
-          />
-          <Route path="/task" element={<TaskDetails />} />
-        </Routes>
-      </UserContext.Provider>
+      <Routes>
+        <Route
+          path="/login"
+          element={!(username || avatarUrl) ? <Login /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/"
+          element={username && avatarUrl ? <Home /> : <Navigate to="/login" />}
+        />
+        <Route path="/:repoOwner/:repoName" element={<RepoView />} />
+        <Route
+          path="/:repoOwner/:repoName/:issueNumber"
+          element={<TaskView />}
+        />
+      </Routes>
     </div>
   );
 }

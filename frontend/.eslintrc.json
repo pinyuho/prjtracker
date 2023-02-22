@@ -20,7 +20,8 @@
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
     "no-undef": ["warn"],
-    "no-empty-function": ["off"]
+    "no-empty-function": ["off"],
+    "@typescript-eslint/no-explicit-any": ["off"]
   },
   "settings": {
     "import/resolver": {
