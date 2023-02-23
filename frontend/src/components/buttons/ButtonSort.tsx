@@ -4,13 +4,17 @@ import { HiSortAscending, HiSortDescending } from "react-icons/hi";
 
 import useOnHover from "../../hooks/useOnHover";
 
-interface SorterProps {
+interface ButtonSortProps {
   disabled: boolean;
   isDescending: boolean;
   setIsDescending: Dispatch<SetStateAction<boolean>>;
 }
 
-const Sorter = ({ disabled, isDescending, setIsDescending }: SorterProps) => {
+const ButtonSort = ({
+  disabled,
+  isDescending,
+  setIsDescending
+}: ButtonSortProps) => {
   const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
 
   return (
@@ -41,4 +45,4 @@ const Sorter = ({ disabled, isDescending, setIsDescending }: SorterProps) => {
   );
 };
 
-export default Sorter;
+export default ButtonSort;

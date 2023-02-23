@@ -6,16 +6,7 @@ import agent from "../agent";
 
 import { ITaskRaw, TaskStatus } from "../types";
 
-const useDatabaseApi = (): [
-  (tasks: ITaskRaw[]) => Promise<any>, // addTasks
-  (
-    issueId: number,
-    taskStatus: TaskStatus,
-    isSetLoading: boolean
-  ) => Promise<any>, // editTasksStatus
-  (issueId: number) => Promise<any>, // getTaskStatus
-  (issueIds: number[]) => Promise<any> // batchReadTasks
-] => {
+const useDatabaseApi = () => {
   const [rerender, setRerender] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -99,7 +90,7 @@ const useDatabaseApi = (): [
     }
   };
 
-  return [addTasks, editTaskStatus, getTaskStatus, batchReadTasks];
+  return { addTasks, editTaskStatus, getTaskStatus, batchReadTasks };
 };
 
 export default useDatabaseApi;

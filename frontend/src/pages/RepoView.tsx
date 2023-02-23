@@ -7,15 +7,15 @@ import { IconCustom } from "../context/IconContext";
 
 import { ascendingOrder, descendingOrder } from "../utils/sortOrder";
 
+import useModal from "../hooks/useModal";
 import useGithubApi from "../hooks/useGithubApi";
 import useDatabaseApi from "../hooks/useDatabaseApi";
 
-import TaskFilterBar from "../components/TaskFilterBar/index";
-import TaskList from "../components/TaskList/index";
+import TaskFilterBar from "../components/TaskFilterBar";
+import TaskList from "../components/TaskList";
 import LoadAnimation from "../components/utils/LoadAnimation";
-import useModal from "../hooks/useModal";
-import ModalEdit from "../components/ModalEdit";
-import ModalAdd from "../components/ModalAdd";
+import ModalEdit from "../components/modals/ModalEdit";
+import ModalAdd from "../components/modals/ModalAdd";
 
 const RepoView = () => {
   const [repos, setRepos] = useState<IRepo[]>();
@@ -30,23 +30,15 @@ const RepoView = () => {
   const [editBody, setEditBody] = useState("");
   const [editIssueNumber, setEditIssueNumber] = useState(0);
 
-  const [showEditModal, setShowEditModal, handleEditClickModal] = useModal();
-  const [showAddModal, setShowAddModal, handleDoneClickModal] = useModal();
+  const [refEditModal, showEditModal, setShowEditModal, handleEditClickModal] =
+    useModal();
+  const [refAddModal, showAddModal, setShowAddModal, handleDoneClickModal] =
+    useModal();
 
   const { repoOwner, repoName } = useParams();
 
-  const [
-    rerender,
-    setRerender,
-    loading,
-    setLoading,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues
-  ] = useGithubApi();
-  const [addTasks, editTaskStatus, getTaskStatus, batchReadTasks] =
-    useDatabaseApi();
+  const { loading, setLoading, getRepos, getIssues } = useGithubApi();
+  const { addTasks, batchReadTasks } = useDatabaseApi();
 
   const fetchRepos = async () => {
     const data: any = await getRepos();
@@ -165,9 +157,7 @@ const RepoView = () => {
           className="h-full self-center"
         />
       </div>
-      {showAddModal && (
-        <ModalAdd isEdit={false} setShowAddModal={setShowAddModal} />
-      )}
+      {showAddModal && <ModalAdd setShowAddModal={setShowAddModal} />}
 
       {showEditModal && (
         <ModalEdit

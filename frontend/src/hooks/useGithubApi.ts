@@ -5,37 +5,7 @@ import agent from "../agent";
 
 import { IIssue, IssueStatus } from "../types";
 
-const useGithubApi = (): [
-  boolean,
-  Dispatch<SetStateAction<boolean>>,
-  boolean,
-  Dispatch<SetStateAction<boolean>>,
-  () => void, // loginWithGithub
-  () => Promise<any>, // getUserData
-  () => Promise<any>, // getRepos
-  (username: string, repoName: string) => Promise<any>, // getIssues
-  (username: string, repoName: string, issueNumber: number) => Promise<any>, // getIssue
-  (
-    username: string,
-    repoName: string,
-    issueNumber: number,
-    title: string,
-    body: string
-  ) => Promise<any>, // updateIssue
-  (
-    username: string,
-    repoName: string,
-    issueNumber: number,
-    state: IssueStatus
-  ) => Promise<any>, // deleteIssue
-  (query: string) => Promise<any>, // searchIssues
-  (
-    username: string,
-    repoName: string,
-    title: string,
-    body: string
-  ) => Promise<any> // addIssue
-] => {
+const useGithubApi = () => {
   const [rerender, setRerender] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -269,7 +239,7 @@ const useGithubApi = (): [
     }
   };
 
-  return [
+  return {
     rerender,
     setRerender,
     loading,
@@ -283,7 +253,7 @@ const useGithubApi = (): [
     deleteIssue,
     searchIssues,
     addIssue
-  ];
+  };
 };
 
 export default useGithubApi;

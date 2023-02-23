@@ -13,16 +13,14 @@ interface HeaderProps {
 
 const Header = ({ isLoggedIn }: HeaderProps) => {
   const navigate = useNavigate();
-  const [
+  const {
     rerender,
     setRerender,
     loading,
     setLoading,
     loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues
-  ] = useGithubApi();
+    getUserData
+  } = useGithubApi();
 
   const { username, setUsername, avatarUrl, setAvatarUrl } = useUserContext();
 

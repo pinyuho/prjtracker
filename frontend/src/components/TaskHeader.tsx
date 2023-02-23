@@ -2,11 +2,10 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-import { IconCustom } from "../../context/IconContext";
-import useModal from "../../hooks/useModal";
-import useGithubApi from "../../hooks/useGithubApi";
+import { IconCustom } from "../context/IconContext";
+import useModal from "../hooks/useModal";
 
-import ModalDelete from "../ModalDelete";
+import ModalDelete from "./modals/ModalDelete";
 
 interface TaskHeaderProps {
   title: string;
@@ -30,7 +29,7 @@ const TaskHeader = ({
 }: TaskHeaderProps) => {
   const navigate = useNavigate();
   const { repoOwner, repoName, issueNumber } = useParams();
-  const [showModal, setShowModal, handleDeleteClick] = useModal();
+  const [ref, showModal, setShowModal, handleDeleteClick] = useModal();
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();

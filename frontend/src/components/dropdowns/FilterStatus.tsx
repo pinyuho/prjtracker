@@ -3,7 +3,7 @@ import React from "react";
 import useDropdown from "../../hooks/useDropdown";
 import useOnHover from "../../hooks/useOnHover";
 
-import TaskStatusLabel from "../utils/TaskStatusLabel";
+import TaskStatusLabel from "../TaskStatusLabel";
 
 import { TaskStatus } from "../../types";
 
@@ -18,7 +18,7 @@ const FilterStatus = ({
   filterStatus,
   setFilterStatus
 }: FilterStatusHeaderProps) => {
-  const [ref, isDropdownOpen, setIsDropdownOpen] = useDropdown();
+  const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
   const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
 
   const handleDropdownClick = (taskStatus: TaskStatus) => {

@@ -6,7 +6,7 @@ import { TaskStatus } from "../../types";
 import useDatabaseApi from "../../hooks/useDatabaseApi";
 import useDropdown from "../../hooks/useDropdown";
 
-import TaskStatusLabel from "../utils/TaskStatusLabel";
+import TaskStatusLabel from "../TaskStatusLabel";
 
 interface FilterStatusTaskProps {
   issueId: number;
@@ -15,18 +15,18 @@ interface FilterStatusTaskProps {
   setLoading?: (loading: boolean) => void;
 }
 
-const TaskStatusSwitch = ({
+const SwitchStatus = ({
   issueId,
   status,
   setStatus,
   setLoading
 }: FilterStatusTaskProps) => {
   const navigate = useNavigate();
-  const [ref, isDropdownOpen, setIsDropdownOpen] = useDropdown();
-  const [addTasks, editTaskStatus, getTaskStatus] = useDatabaseApi();
+  const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
+  const { editTaskStatus } = useDatabaseApi();
 
   const patchTaskStatus = async (issueId: number, taskStatus: TaskStatus) => {
-    await editTaskStatus(issueId, taskStatus, true);
+    await editTaskStatus(issueId, taskStatus);
   };
 
   // Handle Option Click
@@ -114,4 +114,4 @@ const TaskStatusSwitch = ({
   );
 };
 
-export default TaskStatusSwitch;
+export default SwitchStatus;

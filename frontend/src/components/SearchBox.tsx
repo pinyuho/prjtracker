@@ -11,11 +11,11 @@ import { BsSearch } from "react-icons/bs";
 import { TiDelete } from "react-icons/ti";
 import { MdOutlineKeyboardReturn } from "react-icons/md";
 
-import { IIssue } from "../../types";
+import { IIssue } from "../types";
 
-import { IconCustom } from "../../context/IconContext";
+import { IconCustom } from "../context/IconContext";
 
-import useGithubApi from "../../hooks/useGithubApi";
+import useGithubApi from "../hooks/useGithubApi";
 
 interface SearchBoxProps {
   disabled: boolean;
@@ -26,20 +26,7 @@ const SearchBox = ({ disabled, setIssuesAll, setLoading }: SearchBoxProps) => {
   const [inputSearch, setInputSearch] = useState("");
   const { repoOwner, repoName } = useParams();
 
-  const [
-    rerender,
-    setRerender,
-    loading_,
-    setLoading_,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues,
-    getIssue,
-    updateIssue,
-    deleteIssue,
-    searchIssues
-  ] = useGithubApi();
+  const { getIssues, searchIssues } = useGithubApi();
 
   const fetchSearchIssues = async () => {
     const queryString = encodeURIComponent(
@@ -80,9 +67,8 @@ const SearchBox = ({ disabled, setIssuesAll, setLoading }: SearchBoxProps) => {
 
   return (
     <div
-      className={`my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r bg-zinc-800 opacity-80
-      shadow-sm shadow-zinc-700 hover:cursor-text ${
-        disabled ? `pointer-events-none opacity-30` : ``
+      className={`my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r bg-zinc-800 opacity-80 shadow-sm shadow-zinc-700 hover:cursor-text ${
+        disabled && `pointer-events-none opacity-40`
       }`}
     >
       {/* Search Icon */}

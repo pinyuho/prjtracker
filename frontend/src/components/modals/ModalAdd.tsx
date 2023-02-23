@@ -1,37 +1,22 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import useGithubApi from "../hooks/useGithubApi";
-import useOnClickOutside from "../hooks/useOnClickOutside";
+import useGithubApi from "../../hooks/useGithubApi";
+import useOnClickOutside from "../../hooks/useClickOutside";
 
 const MIN_BODY_LENGTH = 30;
 
 interface ModalAddProps {
-  isEdit: boolean;
   setShowAddModal: Dispatch<SetStateAction<boolean>>;
 }
-const ModalAdd = ({ isEdit, setShowAddModal }: ModalAddProps) => {
+const ModalAdd = ({ setShowAddModal }: ModalAddProps) => {
   const ref = useRef(null);
   const navigate = useNavigate();
   const [inputTitle, setInputTitle] = useState("");
   const [inputBody, setInputBody] = useState("");
   const { repoOwner, repoName } = useParams();
 
-  const [
-    rerender,
-    setRerender,
-    loading,
-    setLoading,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues,
-    getIssue,
-    updateIssue,
-    deleteIssue,
-    searchIssues,
-    addIssue
-  ] = useGithubApi();
+  const { addIssue } = useGithubApi();
 
   useOnClickOutside(ref, () => setShowAddModal(false));
 

@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction } from "react";
 
-import { IIssue, IRepo, TaskStatus } from "../../types";
+import { IIssue, IRepo, TaskStatus } from "../types";
 
-import FilterRepo from "./FilterRepo";
-import FilterStatus from "./FilterStatus";
+import FilterRepo from "./dropdowns/FilterRepo";
+import FilterStatus from "./dropdowns/FilterStatus";
 import SearchBox from "./SearchBox";
-import Sorter from "./Sorter";
+import ButtonSort from "./buttons/ButtonSort";
 
 interface ActionBarProps {
   disabled: boolean;
@@ -45,7 +45,7 @@ const TaskFilterBar = ({
         setIssuesAll={setIssuesAll}
         setLoading={setLoading}
       />
-      <Sorter
+      <ButtonSort
         disabled={disabled}
         isDescending={isDescending}
         setIsDescending={setIsDescending}

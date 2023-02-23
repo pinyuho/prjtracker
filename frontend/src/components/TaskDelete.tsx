@@ -19,19 +19,7 @@ const TaskDelete = ({
 }: TaskDeleteProps) => {
   const navigate = useNavigate();
   const { repoOwner, repoName } = useParams();
-  const [
-    rerender,
-    setRerender,
-    loading_,
-    setLoading_,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues,
-    getIssue,
-    updateIssue,
-    deleteIssue
-  ] = useGithubApi();
+  const { deleteIssue } = useGithubApi();
 
   const exeDeleteIssue = async (
     repoOwner: string,
@@ -71,9 +59,6 @@ const TaskDelete = ({
           color={"white"}
           className="mx-1 h-full self-center"
         />
-        {/* <div className="h-full text-sm font-bold uppercase leading-7 text-white">
-          Delete
-        </div> */}
       </button>
     </>
   );

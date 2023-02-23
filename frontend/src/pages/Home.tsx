@@ -5,7 +5,7 @@ import { IRepo, TaskStatus, IIssue } from "../types";
 import { useUserContext } from "../context/UserContext";
 import useGithubApi from "../hooks/useGithubApi";
 
-import TaskFilterBar from "../components/TaskFilterBar/index";
+import TaskFilterBar from "../components/TaskFilterBar";
 
 const Home = () => {
   const { username, setUsername, avatarUrl, setAvatarUrl } = useUserContext();
@@ -15,16 +15,7 @@ const Home = () => {
   const [isDescending, setIsDescending] = useState<boolean>(true);
   const [issuesAll, setIssuesAll] = useState<IIssue[]>([]);
 
-  const [
-    rerender,
-    setRerender,
-    loading,
-    setLoading,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues
-  ] = useGithubApi();
+  const { loading, setLoading, getUserData, getRepos } = useGithubApi();
 
   useEffect(() => {
     const fetchUser = async () => {

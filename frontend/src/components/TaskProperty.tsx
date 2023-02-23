@@ -1,6 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 
-import { IconCustom } from "../../context/IconContext";
+import { IconCustom } from "../context/IconContext";
 
 interface TaskPropertyProps {
   loading: boolean;

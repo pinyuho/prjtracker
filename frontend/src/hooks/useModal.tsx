@@ -1,29 +1,24 @@
-import { useRef, useState, LegacyRef, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useRef, RefObject } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useGithubApi from "./useGithubApi";
+import useClickOutside from "./useClickOutside";
 
-function useModal(): [
+function useModal<T extends HTMLDivElement = HTMLDivElement>(): [
+  RefObject<T>,
   boolean,
   Dispatch<SetStateAction<boolean>>,
   (repoOwner: string, repoName: string, issueNumber: number) => void
 ] {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [
-    rerender,
-    setRerender,
-    loading,
-    setLoading,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues,
-    getIssue,
-    updateIssue,
-    deleteIssue
-  ] = useGithubApi();
 
+  const ref = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+  useClickOutside(ref, () => setShowModal(false));
+
+  const { deleteIssue } = useGithubApi();
+
+  // TODO: move to component
   const handleDeleteClickModal = async (
     repoOwner: string,
     repoName: string,
@@ -34,7 +29,7 @@ function useModal(): [
     navigate(`/${repoOwner}/${repoName}`);
   };
 
-  return [showModal, setShowModal, handleDeleteClickModal];
+  return [ref, showModal, setShowModal, handleDeleteClickModal]; // to make this hook reusable
 }
 
 export default useModal;

@@ -14,7 +14,7 @@ const FilterRepo = ({ repos }: FilterRepoProps) => {
   const { repoOwner, repoName } = useParams();
 
   const { username } = useUserContext();
-  const [ref, isDropdownOpen, setIsDropdownOpen] = useDropdown();
+  const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
 
   return (
     <div ref={ref} className="z-10 mr-3 h-9 self-center">

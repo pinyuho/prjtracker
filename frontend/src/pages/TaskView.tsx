@@ -12,10 +12,10 @@ import useGithubApi from "../hooks/useGithubApi";
 import useDatabaseApi from "../hooks/useDatabaseApi";
 
 import LoadAnimation from "../components/utils/LoadAnimation";
-import TaskStatusSwitch from "../components/utils/TaskStatusSwitch";
+import SwitchStatus from "../components/dropdowns/SwitchStatus";
 
-import { TaskProperty } from "../components/TaskDetails/index";
-import TaskHeader from "../components/TaskDetails/TaskHeader";
+import TaskProperty from "../components/TaskProperty";
+import TaskHeader from "../components/TaskHeader";
 
 const MIN_BODY_LENGTH = 30;
 
@@ -32,21 +32,8 @@ const TaskView = () => {
 
   const { repoOwner, repoName, issueNumber } = useParams();
 
-  const [
-    rerender,
-    setRerender,
-    loading,
-    setLoading,
-    loginWithGithub,
-    getUserData,
-    getRepos,
-    getIssues,
-    getIssue,
-    updateIssue,
-    deleteIssue
-  ] = useGithubApi();
-  const [addTasks, editTaskStatus, getTaskStatus, batchReadTasks] =
-    useDatabaseApi();
+  const { loading, setLoading, getIssue, updateIssue } = useGithubApi();
+  const { getTaskStatus } = useDatabaseApi();
 
   useEffect(() => {
     const fetchTask = async (
@@ -139,7 +126,7 @@ const TaskView = () => {
           icon={BiCollection}
           title="Status"
           content={
-            <TaskStatusSwitch
+            <SwitchStatus
               issueId={issue?.id}
               status={status}
               setStatus={setStatus}

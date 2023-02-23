@@ -1,19 +1,19 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useUserContext } from "../../context/UserContext";
-import { IconCustom } from "../../context/IconContext";
+import { useUserContext } from "../context/UserContext";
+import { IconCustom } from "../context/IconContext";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import moment from "moment";
 
-import useOnHover from "../../hooks/useOnHover";
-import useOnClickOutside from "../../hooks/useOnClickOutside";
+import useOnHover from "../hooks/useOnHover";
+import useClickOutside from "../hooks/useClickOutside";
 
-import TaskStatusSwitch from "../utils/TaskStatusSwitch";
-import TaskDelete from "../TaskDelete";
+import SwitchStatus from "./dropdowns/SwitchStatus";
+import TaskDelete from "./TaskDelete";
 
-import { TaskStatus } from "../../types";
+import { TaskStatus } from "../types";
 
 export interface TaskProps {
   issueId: number;
@@ -55,7 +55,7 @@ const Task = ({
   const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
 
   const ref = useRef(null);
-  useOnClickOutside(ref, () => setShowTaskDelete(false));
+  useClickOutside(ref, () => setShowTaskDelete(false));
 
   return (
     <div
@@ -129,7 +129,7 @@ const Task = ({
 
       {/* Task Label */}
       <div className="my-1 -ml-2 flex w-full justify-start">
-        <TaskStatusSwitch
+        <SwitchStatus
           issueId={issueId}
           status={status}
           setLoading={setLoading}

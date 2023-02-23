@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useRef } from "react";
 
-import useOnClickOutside from "../hooks/useOnClickOutside";
+import useOnClickOutside from "../../hooks/useClickOutside";
 
 interface ModalProps {
   setShowModal: Dispatch<SetStateAction<boolean>>;

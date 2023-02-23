@@ -1,8 +1,8 @@
-import React, { Dispatch, SetStateAction, MouseEventHandler } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { TiDelete } from "react-icons/ti";
-import { TaskStatus } from "../../types";
+import { TaskStatus } from "../types";
 
-import { IconCustom } from "../../context/IconContext";
+import { IconCustom } from "../context/IconContext";
 
 export interface TaskStatusLabelProps {
   status: TaskStatus;
