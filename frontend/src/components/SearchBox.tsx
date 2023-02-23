@@ -18,11 +18,11 @@ import { IconCustom } from "../context/IconContext";
 import useGithubApi from "../hooks/useGithubApi";
 
 interface SearchBoxProps {
-  disabled: boolean;
   setIssuesAll: Dispatch<SetStateAction<IIssue[]>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  className?: string;
 }
-const SearchBox = ({ disabled, setIssuesAll, setLoading }: SearchBoxProps) => {
+const SearchBox = ({ setIssuesAll, setLoading, className }: SearchBoxProps) => {
   const [inputSearch, setInputSearch] = useState("");
   const { repoOwner, repoName } = useParams();
 
@@ -43,7 +43,7 @@ const SearchBox = ({ disabled, setIssuesAll, setLoading }: SearchBoxProps) => {
   const handleEnterPress = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
       fetchSearchIssues();
-      // setInputSearch(""); // TODO: set searchInput into labelComponent
+      // setInputSearch(""); // TODO: add a label of search input
     }
   };
 
@@ -67,9 +67,8 @@ const SearchBox = ({ disabled, setIssuesAll, setLoading }: SearchBoxProps) => {
 
   return (
     <div
-      className={`my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r bg-zinc-800 opacity-80 shadow-sm shadow-zinc-700 hover:cursor-text ${
-        disabled && `pointer-events-none opacity-40`
-      }`}
+      className={`my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r bg-zinc-800 
+      opacity-80 shadow-sm shadow-zinc-700 hover:cursor-text ${className}`}
     >
       {/* Search Icon */}
       <button className="mx-3 h-8">
@@ -78,7 +77,7 @@ const SearchBox = ({ disabled, setIssuesAll, setLoading }: SearchBoxProps) => {
 
       {/* Input Field */}
       <input
-        className="h-8 w-full bg-transparent text-zinc-200 outline-none ring-0 placeholder:text-sm placeholder:text-zinc-500 "
+        className="h-8 w-full bg-transparent text-zinc-200 outline-none ring-0 placeholder:text-sm placeholder:text-zinc-500"
         type="text"
         placeholder="Search..."
         onChange={handleInputSearch}

@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import useGithubApi from "../../hooks/useGithubApi";
 import useClickOutside from "../../hooks/useClickOutside";
-import useModal from "../../hooks/useModal";
 
 const MIN_BODY_LENGTH = 30;
 

@@ -1,7 +1,7 @@
 import React from "react";
 
 import Task from "./Task";
-import { ITask } from "../types";
+import { ITask } from "../../types";
 
 interface TaskListProps {
   setLoading: (loading: boolean) => void;

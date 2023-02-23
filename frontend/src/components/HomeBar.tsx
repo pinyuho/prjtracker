@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 
 import { IIssue, IRepo, TaskStatus } from "../types";
 
@@ -7,51 +7,37 @@ import FilterStatus from "./dropdowns/FilterStatus";
 import SearchBox from "./SearchBox";
 import ButtonSort from "./buttons/ButtonSort";
 
-interface ActionBarProps {
-  disabled: boolean;
+interface HomeBarProps {
   repos: IRepo[] | undefined;
-  filterStatus: TaskStatus;
-  setFilterStatus: (status: TaskStatus) => void;
-
-  isDescending: boolean;
-  setIsDescending: Dispatch<SetStateAction<boolean>>;
-
-  setIssuesAll: Dispatch<SetStateAction<IIssue[]>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-const TaskFilterBar = ({
-  disabled,
-  repos,
-  filterStatus,
-  setFilterStatus,
+const HomeBar = ({ repos, setLoading }: HomeBarProps) => {
+  const [filterStatus, setFilterStatus] = useState<TaskStatus>("");
+  const [isDescending, setIsDescending] = useState<boolean>(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [issuesAll, setIssuesAll] = useState<IIssue[]>([]);
 
-  isDescending,
-  setIsDescending,
-
-  setIssuesAll,
-  setLoading
-}: ActionBarProps) => {
   return (
     <div className="mt-[18px] flex w-11/12 flex-row justify-center self-center md:w-[1100px]">
       <FilterRepo repos={repos} />
       <FilterStatus
-        disabled={disabled}
         filterStatus={filterStatus}
         setFilterStatus={setFilterStatus}
+        className="pointer-events-none opacity-30"
       />
       <SearchBox
-        disabled={disabled}
         setIssuesAll={setIssuesAll}
         setLoading={setLoading}
+        className="pointer-events-none opacity-30"
       />
       <ButtonSort
-        disabled={disabled}
         isDescending={isDescending}
         setIsDescending={setIsDescending}
+        className="pointer-events-none opacity-30"
       />
     </div>
   );
 };
 
-export default TaskFilterBar;
+export default HomeBar;

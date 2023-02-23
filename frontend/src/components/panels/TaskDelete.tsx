@@ -2,9 +2,9 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-import { IconCustom } from "../context/IconContext";
+import { IconCustom } from "../../context/IconContext";
 
-import useGithubApi from "../hooks/useGithubApi";
+import useGithubApi from "../../hooks/useGithubApi";
 
 interface TaskDeleteProps {
   issueNumber: number;

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { BiPlusMedical } from "react-icons/bi";
 
 import { ITask, IRepo, IIssue, TaskStatus, ITaskRaw } from "../types";
-import { IconCustom } from "../context/IconContext";
 
 import { ascendingOrder, descendingOrder } from "../utils/sortOrder";
 
@@ -11,9 +9,10 @@ import useModal from "../hooks/useModal";
 import useGithubApi from "../hooks/useGithubApi";
 import useDatabaseApi from "../hooks/useDatabaseApi";
 
-import TaskFilterBar from "../components/TaskFilterBar";
-import TaskList from "../components/TaskList";
+import RepoViewBar from "../components/RepoViewBar";
+import TaskList from "../components/panels/TaskList";
 import LoadAnimation from "../components/utils/LoadAnimation";
+import ButtonAdd from "../components/buttons/ButtonAdd";
 import ModalEdit from "../components/modals/ModalEdit";
 import ModalAdd from "../components/modals/ModalAdd";
 
@@ -30,10 +29,8 @@ const RepoView = () => {
   const [editBody, setEditBody] = useState("");
   const [editIssueNumber, setEditIssueNumber] = useState(0);
 
-  const [refEditModal, showEditModal, setShowEditModal, handleEditClickModal] =
-    useModal();
-  const [refAddModal, showAddModal, setShowAddModal, handleDoneClickModal] =
-    useModal();
+  const [showEditModal, setShowEditModal] = useModal();
+  const [showAddModal, setShowAddModal] = useModal();
 
   const { repoOwner, repoName } = useParams();
 
@@ -96,8 +93,7 @@ const RepoView = () => {
 
   return (
     <div className="flex flex-col">
-      <TaskFilterBar
-        disabled={false}
+      <RepoViewBar
         repos={repos}
         filterStatus={statusFilter}
         setFilterStatus={setStatusFilter}
@@ -147,16 +143,7 @@ const RepoView = () => {
       )}
 
       {/* Add Task Button */}
-      <div
-        className="leading-12 fixed right-12 bottom-12 flex h-12 w-12 justify-center rounded-md bg-zinc-700 opacity-60 shadow-lg shadow-black hover:cursor-pointer hover:opacity-90"
-        onClick={() => setShowAddModal(true)}
-      >
-        <IconCustom
-          Icon={BiPlusMedical}
-          color={"white"}
-          className="h-full self-center"
-        />
-      </div>
+      <ButtonAdd onClick={() => setShowAddModal(!showAddModal)} />
       {showAddModal && <ModalAdd setShowAddModal={setShowAddModal} />}
 
       {showEditModal && (

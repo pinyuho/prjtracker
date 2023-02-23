@@ -6,7 +6,7 @@ import { TaskStatus } from "../../types";
 import useDatabaseApi from "../../hooks/useDatabaseApi";
 import useDropdown from "../../hooks/useDropdown";
 
-import TaskStatusLabel from "../TaskStatusLabel";
+import LabelStatus from "../utils/LabelStatus";
 
 interface FilterStatusTaskProps {
   issueId: number;
@@ -82,7 +82,7 @@ const SwitchStatus = ({
           {status === "" ? (
             <div className="flex w-full justify-center p-0.5">-</div>
           ) : (
-            <TaskStatusLabel status={status} />
+            <LabelStatus status={status} />
           )}
         </button>
       </div>
@@ -94,19 +94,19 @@ const SwitchStatus = ({
             className="rounded px-2 hover:bg-zinc-500"
             onClick={handleInProgressClick}
           >
-            <TaskStatusLabel status="in-progress" />
+            <LabelStatus status="in-progress" />
           </button>
           <button
             className="rounded px-2 hover:bg-zinc-500"
             onClick={handleOpenClick}
           >
-            <TaskStatusLabel status="open" />
+            <LabelStatus status="open" />
           </button>
           <button
             className="rounded px-2 hover:bg-zinc-500"
             onClick={handleDoneClick}
           >
-            <TaskStatusLabel status="done" />
+            <LabelStatus status="done" />
           </button>
         </div>
       )}

@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 
-import { IRepo, TaskStatus, IIssue } from "../types";
+import { IRepo } from "../types";
 
 import { useUserContext } from "../context/UserContext";
 import useGithubApi from "../hooks/useGithubApi";
 
-import TaskFilterBar from "../components/TaskFilterBar";
+import HomeBar from "../components/HomeBar";
 
 const Home = () => {
-  const { username, setUsername, avatarUrl, setAvatarUrl } = useUserContext();
+  const { username, setUsername, setAvatarUrl } = useUserContext();
 
   const [repos, setRepos] = useState<IRepo[]>();
-  const [status, setStatus] = useState<TaskStatus>("");
-  const [isDescending, setIsDescending] = useState<boolean>(true);
-  const [issuesAll, setIssuesAll] = useState<IIssue[]>([]);
-
-  const { loading, setLoading, getUserData, getRepos } = useGithubApi();
+  const { setLoading, getUserData, getRepos } = useGithubApi();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,16 +36,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col">
-      <TaskFilterBar
-        disabled={true}
-        repos={repos}
-        filterStatus={status}
-        setFilterStatus={setStatus}
-        isDescending={isDescending}
-        setIsDescending={setIsDescending}
-        setIssuesAll={setIssuesAll}
-        setLoading={setLoading}
-      />
+      <HomeBar repos={repos} setLoading={setLoading} />
       <div className="mt-8 flex h-[450px] items-center justify-center">
         <div className="rounded-lg border-2 border-dashed border-zinc-800 py-1 px-4 text-zinc-500">
           Please choose a repository.

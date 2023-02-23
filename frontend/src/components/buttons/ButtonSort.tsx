@@ -2,27 +2,23 @@ import React, { Dispatch, SetStateAction } from "react";
 
 import { HiSortAscending, HiSortDescending } from "react-icons/hi";
 
-import useOnHover from "../../hooks/useOnHover";
+import useHover from "../../hooks/useHover";
 
 interface ButtonSortProps {
-  disabled: boolean;
   isDescending: boolean;
   setIsDescending: Dispatch<SetStateAction<boolean>>;
+  className?: string;
 }
 
 const ButtonSort = ({
-  disabled,
   isDescending,
-  setIsDescending
+  setIsDescending,
+  className
 }: ButtonSortProps) => {
-  const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
+  const [onHover, handleMouseOver, handleMouseOut] = useHover();
 
   return (
-    <div
-      className={`self-center ${
-        disabled ? `pointer-events-none opacity-30` : ``
-      }`}
-    >
+    <div className={`self-center ${className}`}>
       <button
         className="ml-1 flex h-8 w-12 justify-center rounded bg-zinc-800 text-zinc-300 opacity-80 
      shadow-sm shadow-zinc-700 outline-none ring-0 hover:bg-zinc-700 "

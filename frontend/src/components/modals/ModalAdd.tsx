@@ -10,15 +10,16 @@ interface ModalAddProps {
   setShowAddModal: Dispatch<SetStateAction<boolean>>;
 }
 const ModalAdd = ({ setShowAddModal }: ModalAddProps) => {
-  const ref = useRef(null);
   const navigate = useNavigate();
-  const [inputTitle, setInputTitle] = useState("");
-  const [inputBody, setInputBody] = useState("");
   const { repoOwner, repoName } = useParams();
 
-  const { addIssue } = useGithubApi();
-
+  const ref = useRef(null);
   useOnClickOutside(ref, () => setShowAddModal(false));
+
+  const [inputTitle, setInputTitle] = useState("");
+  const [inputBody, setInputBody] = useState("");
+
+  const { addIssue } = useGithubApi();
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -37,7 +38,6 @@ const ModalAdd = ({ setShowAddModal }: ModalAddProps) => {
       alert("Body must be at least 30 characters");
     } else if (repoOwner && repoName) {
       addIssue(repoOwner, repoName, inputTitle, inputBody);
-      // setEditing(false);
       setShowAddModal(false);
       navigate(0); // refresh page
     }

@@ -1,19 +1,19 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useUserContext } from "../context/UserContext";
-import { IconCustom } from "../context/IconContext";
+import { useUserContext } from "../../context/UserContext";
+import { IconCustom } from "../../context/IconContext";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit3 } from "react-icons/fi";
 import moment from "moment";
 
-import useOnHover from "../hooks/useOnHover";
-import useClickOutside from "../hooks/useClickOutside";
+import useHover from "../../hooks/useHover";
+import useClickOutside from "../../hooks/useClickOutside";
 
-import SwitchStatus from "./dropdowns/SwitchStatus";
+import SwitchStatus from "../dropdowns/SwitchStatus";
 import TaskDelete from "./TaskDelete";
 
-import { TaskStatus } from "../types";
+import { TaskStatus } from "../../types";
 
 export interface TaskProps {
   issueId: number;
@@ -52,7 +52,7 @@ const Task = ({
   const { username } = useUserContext();
   const [showTaskDelete, setShowTaskDelete] = useState(false);
 
-  const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
+  const [onHover, handleMouseOver, handleMouseOut] = useHover();
 
   const ref = useRef(null);
   useClickOutside(ref, () => setShowTaskDelete(false));

@@ -1,32 +1,22 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { MouseEventHandler } from "react";
 import { TiDelete } from "react-icons/ti";
-import { TaskStatus } from "../types";
+import { TaskStatus } from "../../types";
 
-import { IconCustom } from "../context/IconContext";
+import { IconCustom } from "../../context/IconContext";
 
 export interface TaskStatusLabelProps {
   status: TaskStatus;
 
-  hoverDelete?: boolean;
-  setFilterStatus?: (status: TaskStatus) => void;
-  setIsDropdownOpen?: Dispatch<SetStateAction<boolean>>;
+  onHover?: boolean;
+  handleClearStatus?: MouseEventHandler<HTMLDivElement>;
 }
 
-const TaskStatusLabel = ({
+const LabelStatus = ({
   status,
-  hoverDelete,
-  setFilterStatus,
-  setIsDropdownOpen
+
+  onHover,
+  handleClearStatus
 }: TaskStatusLabelProps) => {
-  const handleDeleteClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (setFilterStatus && setIsDropdownOpen) {
-      setFilterStatus("");
-      setIsDropdownOpen(false);
-    }
-
-    e.stopPropagation();
-  };
-
   switch (status) {
     case "in-progress":
       return (
@@ -35,9 +25,9 @@ const TaskStatusLabel = ({
           <div className="mx-1 h-5 self-center truncate text-ellipsis text-xs font-medium leading-5 text-white">
             In Progress
           </div>
-          {hoverDelete && (
+          {onHover && (
             <div className="z-50 flex h-full flex-col justify-center">
-              <div onClick={handleDeleteClick}>
+              <div onClick={handleClearStatus}>
                 <IconCustom
                   Icon={TiDelete}
                   color={"white"}
@@ -48,26 +38,7 @@ const TaskStatusLabel = ({
           )}
         </div>
       );
-    case "done":
-      return (
-        <div className="my-1 flex h-5 w-max select-none flex-row truncate rounded-md bg-[#3d7b31aa] p-1">
-          <div className="mx-1 h-1.5 w-1.5 self-center rounded-full bg-[#77d56494]"></div>
-          <div className="mx-1 h-5 self-center text-xs font-medium leading-5 text-white">
-            Done
-          </div>
-          {hoverDelete && (
-            <div className="flex flex-col justify-center">
-              <div onClick={handleDeleteClick}>
-                <IconCustom
-                  Icon={TiDelete}
-                  color={"white"}
-                  className="opacity-50 hover:opacity-70"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      );
+
     case "open":
       return (
         <div className="my-1 flex h-5 w-max select-none flex-row truncate rounded-md bg-[#686239] p-1">
@@ -75,9 +46,9 @@ const TaskStatusLabel = ({
           <div className="mx-1 h-5 self-center text-xs font-medium leading-5 text-white">
             Open
           </div>
-          {hoverDelete && (
+          {onHover && (
             <div className="flex flex-col justify-center">
-              <div onClick={handleDeleteClick}>
+              <div onClick={handleClearStatus}>
                 <IconCustom
                   Icon={TiDelete}
                   color={"white"}
@@ -88,16 +59,27 @@ const TaskStatusLabel = ({
           )}
         </div>
       );
-
-    default: // none
+    default: // done
       return (
-        <div className="my-1 flex h-5 w-max select-none flex-row truncate rounded-md bg-[#444444a2] p-1">
-          <div className="mx-1 h-5 w-full self-center text-xs font-medium leading-5 text-white">
-            -
+        <div className="my-1 flex h-5 w-max select-none flex-row truncate rounded-md bg-[#3d7b31aa] p-1">
+          <div className="mx-1 h-1.5 w-1.5 self-center rounded-full bg-[#77d56494]"></div>
+          <div className="mx-1 h-5 self-center text-xs font-medium leading-5 text-white">
+            Done
           </div>
+          {onHover && (
+            <div className="flex flex-col justify-center">
+              <div onClick={handleClearStatus}>
+                <IconCustom
+                  Icon={TiDelete}
+                  color={"white"}
+                  className="opacity-50 hover:opacity-70"
+                />
+              </div>
+            </div>
+          )}
         </div>
       );
   }
 };
 
-export default TaskStatusLabel;
+export default LabelStatus;

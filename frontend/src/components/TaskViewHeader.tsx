@@ -3,11 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { IconCustom } from "../context/IconContext";
+
 import useModal from "../hooks/useModal";
+import useGithubApi from "../hooks/useGithubApi";
 
 import ModalDelete from "./modals/ModalDelete";
 
-interface TaskHeaderProps {
+interface TaskViewHeaderProps {
   title: string;
   inputTitle: string;
   setInputTitle: Dispatch<SetStateAction<string>>;
@@ -17,7 +19,7 @@ interface TaskHeaderProps {
   setEditing: Dispatch<SetStateAction<boolean>>;
   handleDoneClick: () => void;
 }
-const TaskHeader = ({
+const TaskViewHeader = ({
   title,
   inputTitle,
   setInputTitle,
@@ -26,14 +28,24 @@ const TaskHeader = ({
   editing,
   setEditing,
   handleDoneClick
-}: TaskHeaderProps) => {
+}: TaskViewHeaderProps) => {
   const navigate = useNavigate();
   const { repoOwner, repoName, issueNumber } = useParams();
-  const [ref, showModal, setShowModal, handleDeleteClick] = useModal();
+
+  const [showModal, setShowModal] = useModal();
+  const { deleteIssue } = useGithubApi();
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setInputTitle(event.target.value);
+  };
+
+  const handleDeleteClick = async () => {
+    if (repoOwner && repoName && issueNumber) {
+      await deleteIssue(repoOwner, repoName, Number(issueNumber), "closed");
+    }
+    setShowModal(false);
+    navigate(`/${repoOwner}/${repoName}`);
   };
 
   return (
@@ -120,8 +132,7 @@ const TaskHeader = ({
               <ModalDelete
                 setShowModal={setShowModal}
                 handleDeleteClick={() => {
-                  if (repoOwner && repoName && issueNumber)
-                    handleDeleteClick(repoOwner, repoName, Number(issueNumber));
+                  if (repoOwner && repoName && issueNumber) handleDeleteClick();
                 }}
               />
             )}
@@ -131,4 +142,4 @@ const TaskHeader = ({
   );
 };
 
-export default TaskHeader;
+export default TaskViewHeader;

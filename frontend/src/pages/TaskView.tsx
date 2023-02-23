@@ -15,7 +15,7 @@ import LoadAnimation from "../components/utils/LoadAnimation";
 import SwitchStatus from "../components/dropdowns/SwitchStatus";
 
 import TaskProperty from "../components/TaskProperty";
-import TaskHeader from "../components/TaskHeader";
+import TaskViewHeader from "../components/TaskViewHeader";
 
 const MIN_BODY_LENGTH = 30;
 
@@ -90,7 +90,7 @@ const TaskView = () => {
     <div className="flex flex-col">
       <div className="mt-6 w-11/12 self-center md:w-[1100px]">
         {/* Header */}
-        <TaskHeader
+        <TaskViewHeader
           title={issue?.title}
           inputTitle={inputTitle}
           setInputTitle={setInputTitle}

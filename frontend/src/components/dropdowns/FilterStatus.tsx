@@ -1,36 +1,41 @@
 import React from "react";
 
 import useDropdown from "../../hooks/useDropdown";
-import useOnHover from "../../hooks/useOnHover";
+import useHover from "../../hooks/useHover";
 
-import TaskStatusLabel from "../TaskStatusLabel";
+import LabelStatus from "../utils/LabelStatus";
 
 import { TaskStatus } from "../../types";
 
 interface FilterStatusHeaderProps {
-  disabled: boolean;
   filterStatus: TaskStatus;
   setFilterStatus: (status: TaskStatus) => void;
+  className?: string;
 }
 
 const FilterStatus = ({
-  disabled,
   filterStatus,
-  setFilterStatus
+  setFilterStatus,
+  className
 }: FilterStatusHeaderProps) => {
   const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
-  const [onHover, handleMouseOver, handleMouseOut] = useOnHover();
+  const [onHover, handleMouseOver, handleMouseOut] = useHover();
 
   const handleDropdownClick = (taskStatus: TaskStatus) => {
     setFilterStatus(taskStatus);
     setIsDropdownOpen(false);
   };
 
+  const handleClearStatus = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log("click delete at LabelStatus");
+    setFilterStatus("");
+    setIsDropdownOpen(false);
+
+    e.stopPropagation();
+  };
+
   return (
-    <div
-      ref={ref}
-      className={`${disabled && `pointer-events-none opacity-30`}`}
-    >
+    <div ref={ref} className={`${className}`}>
       {/* Filter Button */}
       <div
         className="mt-2 flex h-8 w-max flex-row justify-between rounded-l border-r-[1px] border-zinc-700 bg-zinc-800 px-4 
@@ -51,11 +56,10 @@ const FilterStatus = ({
             </div>
           ) : (
             <div className="flex h-full w-max flex-col justify-center">
-              <TaskStatusLabel
+              <LabelStatus
                 status={filterStatus}
-                hoverDelete={onHover}
-                setFilterStatus={setFilterStatus}
-                setIsDropdownOpen={setIsDropdownOpen}
+                onHover={onHover}
+                handleClearStatus={handleClearStatus}
               />
             </div>
           )}
@@ -71,19 +75,19 @@ const FilterStatus = ({
             className="flex justify-center rounded px-3 hover:bg-zinc-500"
             onClick={() => handleDropdownClick("in-progress")}
           >
-            <TaskStatusLabel status="in-progress" />
+            <LabelStatus status="in-progress" />
           </div>
           <button
             className="flex justify-center rounded px-3 hover:bg-zinc-500"
             onClick={() => handleDropdownClick("open")}
           >
-            <TaskStatusLabel status="open" />
+            <LabelStatus status="open" />
           </button>
           <button
             className="flex justify-center rounded px-3 hover:bg-zinc-500"
             onClick={() => handleDropdownClick("done")}
           >
-            <TaskStatusLabel status="done" />
+            <LabelStatus status="done" />
           </button>
         </div>
       )}
