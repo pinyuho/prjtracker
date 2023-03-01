@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  ChangeEvent,
-  KeyboardEvent,
-  Dispatch,
-  SetStateAction
-} from "react";
+import React, { useState, ChangeEvent, KeyboardEvent } from "react";
 import { useParams } from "react-router-dom";
 
 import { BsSearch } from "react-icons/bs";
@@ -18,8 +12,8 @@ import { IconCustom } from "../context/IconContext";
 import useGithubApi from "../hooks/useGithubApi";
 
 interface SearchBoxProps {
-  setIssuesAll: Dispatch<SetStateAction<IIssue[]>>;
-  setLoading: Dispatch<SetStateAction<boolean>>;
+  setIssuesAll: (issuesAll: IIssue[]) => void;
+  setLoading: (loading: boolean) => void;
   className?: string;
 }
 const SearchBox = ({ setIssuesAll, setLoading, className }: SearchBoxProps) => {
@@ -34,7 +28,6 @@ const SearchBox = ({ setIssuesAll, setLoading, className }: SearchBoxProps) => {
     );
 
     setLoading(false);
-    console.log("Set loading: false");
     const data = await searchIssues(queryString);
     console.log("Search issues", data);
     setIssuesAll(data.items);
@@ -53,7 +46,7 @@ const SearchBox = ({ setIssuesAll, setLoading, className }: SearchBoxProps) => {
 
   const handleClearSearch = () => {
     const fetchIssues = async (repoOwner: string, repoName: string) => {
-      const data: any = await getIssues(repoOwner, repoName);
+      const data: any = await getIssues(repoOwner, repoName, 10, 1);
       setIssuesAll(data);
     };
     setInputSearch("");
@@ -67,8 +60,7 @@ const SearchBox = ({ setIssuesAll, setLoading, className }: SearchBoxProps) => {
 
   return (
     <div
-      className={`my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r bg-zinc-800 
-      opacity-80 shadow-sm shadow-zinc-700 hover:cursor-text ${className}`}
+      className={`my-2 mr-2 flex h-8 w-full shrink flex-row rounded-r bg-[#242427] shadow-sm shadow-zinc-700 hover:cursor-text ${className}`}
     >
       {/* Search Icon */}
       <button className="mx-3 h-8">

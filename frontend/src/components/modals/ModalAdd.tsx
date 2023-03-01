@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import useGithubApi from "../../hooks/useGithubApi";
@@ -7,7 +7,7 @@ import useOnClickOutside from "../../hooks/useClickOutside";
 const MIN_BODY_LENGTH = 30;
 
 interface ModalAddProps {
-  setShowAddModal: Dispatch<SetStateAction<boolean>>;
+  setShowAddModal: (showAddModal: boolean) => void;
 }
 const ModalAdd = ({ setShowAddModal }: ModalAddProps) => {
   const navigate = useNavigate();

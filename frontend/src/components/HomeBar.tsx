@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
 
 import { IIssue, IRepo, TaskStatus } from "../types";
 
@@ -9,10 +9,10 @@ import ButtonSort from "./buttons/ButtonSort";
 
 interface HomeBarProps {
   repos: IRepo[] | undefined;
-  setLoading: Dispatch<SetStateAction<boolean>>;
+  setIsLoading: (loading: boolean) => void;
 }
 
-const HomeBar = ({ repos, setLoading }: HomeBarProps) => {
+const HomeBar = ({ repos, setIsLoading: setLoading }: HomeBarProps) => {
   const [filterStatus, setFilterStatus] = useState<TaskStatus>("");
   const [isDescending, setIsDescending] = useState<boolean>(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

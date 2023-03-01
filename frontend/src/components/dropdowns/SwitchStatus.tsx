@@ -12,14 +12,14 @@ interface FilterStatusTaskProps {
   issueId: number;
   status: TaskStatus;
   setStatus?: (status: TaskStatus) => void;
-  setLoading?: (loading: boolean) => void;
+  setIsLoading?: (loading: boolean) => void;
 }
 
 const SwitchStatus = ({
   issueId,
   status,
   setStatus,
-  setLoading
+  setIsLoading
 }: FilterStatusTaskProps) => {
   const navigate = useNavigate();
   const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
@@ -33,7 +33,7 @@ const SwitchStatus = ({
   const handleInProgressClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const taskStatus = "in-progress";
 
-    if (setLoading) setLoading(true);
+    if (setIsLoading) setIsLoading(true);
     patchTaskStatus(Number(issueId), taskStatus);
     if (setStatus) setStatus(taskStatus); // for TaskView page
     setIsDropdownOpen(false);
@@ -45,7 +45,7 @@ const SwitchStatus = ({
   const handleOpenClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const taskStatus = "open";
 
-    if (setLoading) setLoading(true);
+    if (setIsLoading) setIsLoading(true);
     patchTaskStatus(Number(issueId), taskStatus);
     if (setStatus) setStatus(taskStatus); // for TaskView page
     setIsDropdownOpen(false);
@@ -57,7 +57,7 @@ const SwitchStatus = ({
   const handleDoneClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const taskStatus = "done";
 
-    if (setLoading) setLoading(true);
+    if (setIsLoading) setIsLoading(true);
     patchTaskStatus(Number(issueId), taskStatus);
     if (setStatus) setStatus(taskStatus); // for TaskView page
     setIsDropdownOpen(false);

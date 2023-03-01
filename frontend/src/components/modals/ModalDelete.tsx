@@ -1,9 +1,9 @@
-import React, { Dispatch, SetStateAction, useRef } from "react";
+import React, { useRef } from "react";
 
 import useOnClickOutside from "../../hooks/useClickOutside";
 
 interface ModalProps {
-  setShowModal: Dispatch<SetStateAction<boolean>>;
+  setShowModal: (showModal: boolean) => void;
   handleDeleteClick: () => void;
 }
 const ModalDelete = ({ setShowModal, handleDeleteClick }: ModalProps) => {

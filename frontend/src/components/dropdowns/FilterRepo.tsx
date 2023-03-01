@@ -30,7 +30,7 @@ const FilterRepo = ({ repos }: FilterRepoProps) => {
       {/* Filter Dropdown */}
       {isDropdownOpen && (
         <div
-          className={`scroll-bar fixed mt-1 overflow-y-scroll rounded bg-[#131212] shadow-inner shadow-[#00000099] ${
+          className={`scroll-bar absolute mt-1 overflow-y-scroll rounded bg-[#131212] shadow-inner shadow-[#00000099] ${
             repos !== undefined && repos.length <= 4 ? `h-max ` : `h-[148px] `
           } ${
             repos !== undefined &&

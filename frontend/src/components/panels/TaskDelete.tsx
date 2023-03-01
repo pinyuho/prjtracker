@@ -8,13 +8,13 @@ import useGithubApi from "../../hooks/useGithubApi";
 
 interface TaskDeleteProps {
   issueNumber: number;
-  setLoading: (loading: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
   setShowTaskDelete: (showTaskDelete: boolean) => void;
 }
 
 const TaskDelete = ({
   issueNumber,
-  setLoading,
+  setIsLoading,
   setShowTaskDelete
 }: TaskDeleteProps) => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const TaskDelete = ({
   };
 
   const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setLoading(true);
+    setIsLoading(true);
     if (repoOwner && repoName) {
       exeDeleteIssue(repoOwner, repoName, issueNumber);
     }

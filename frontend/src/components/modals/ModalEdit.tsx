@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import useGithubApi from "../../hooks/useGithubApi";
@@ -7,7 +7,7 @@ import useClickOutside from "../../hooks/useClickOutside";
 const MIN_BODY_LENGTH = 30;
 
 interface ModalTaskProps {
-  setShowEditModal: Dispatch<SetStateAction<boolean>>;
+  setShowEditModal: (showEditModal: boolean) => void;
   title: string;
   body: string;
   issueNumber: number;

@@ -1,13 +1,13 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 
 import { AxiosError } from "axios";
 import agent from "../agent";
 
-import { IIssue, IssueStatus } from "../types";
+import { IssueStatus } from "../types";
 
 const useGithubApi = () => {
   const [rerender, setRerender] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -56,7 +56,7 @@ const useGithubApi = () => {
       });
       console.log("User data: ", data);
 
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -74,7 +74,7 @@ const useGithubApi = () => {
         }
       });
       console.log("Repos:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -84,10 +84,15 @@ const useGithubApi = () => {
     }
   };
 
-  const getIssues = async (username: string, repoName: string) => {
+  const getIssues = async (
+    username: string,
+    repoName: string,
+    perPage: number,
+    page: number
+  ) => {
     try {
       const { data } = await agent.get(
-        `/github/issues/${username}/${repoName}`,
+        `/github/issues/${username}/${repoName}?per_page=${perPage}&page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`
@@ -95,13 +100,13 @@ const useGithubApi = () => {
         }
       );
       console.log("Issues:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
       const err = error as AxiosError;
       console.log("error: ", err.response?.data);
-      return err.response?.data;
+      return;
     }
   };
 
@@ -120,7 +125,7 @@ const useGithubApi = () => {
         }
       );
       console.log("Issue:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -151,7 +156,7 @@ const useGithubApi = () => {
         }
       );
       console.log("Updated Issue:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -180,7 +185,7 @@ const useGithubApi = () => {
         }
       );
       console.log("Deleted Issue:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -199,7 +204,7 @@ const useGithubApi = () => {
         }
       });
       console.log("Searched Issue:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -229,7 +234,7 @@ const useGithubApi = () => {
         }
       );
       console.log("Added Issue:", data);
-      setLoading(false);
+      setIsLoading(false);
 
       return data;
     } catch (error) {
@@ -242,8 +247,8 @@ const useGithubApi = () => {
   return {
     rerender,
     setRerender,
-    loading,
-    setLoading,
+    isLoading,
+    setIsLoading,
     loginWithGithub,
     getUserData,
     getRepos,

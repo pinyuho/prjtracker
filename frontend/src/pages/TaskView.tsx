@@ -21,7 +21,7 @@ const MIN_BODY_LENGTH = 30;
 
 const TaskView = () => {
   const navigate = useNavigate();
-  const [editing, setEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [issue, setIssue] = useState<IIssue>({} as IIssue);
 
   const [inputTitle, setInputTitle] = useState("");
@@ -32,7 +32,7 @@ const TaskView = () => {
 
   const { repoOwner, repoName, issueNumber } = useParams();
 
-  const { loading, setLoading, getIssue, updateIssue } = useGithubApi();
+  const { isLoading, setIsLoading, getIssue, updateIssue } = useGithubApi();
   const { getTaskStatus } = useDatabaseApi();
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const TaskView = () => {
       setStatus(statusObj.status);
     };
 
-    setLoading(true);
+    setIsLoading(true);
     if (repoOwner && repoName && issueNumber) {
       fetchTask(repoOwner, repoName, Number(issueNumber));
     }
@@ -81,7 +81,7 @@ const TaskView = () => {
         inputTitle,
         inputBody
       );
-      setEditing(false);
+      setIsEditing(false);
       navigate(0); // refresh page
     }
   };
@@ -94,9 +94,9 @@ const TaskView = () => {
           title={issue?.title}
           inputTitle={inputTitle}
           setInputTitle={setInputTitle}
-          loading={loading}
-          editing={editing}
-          setEditing={setEditing}
+          isLoading={isLoading}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
           handleDoneClick={handleDoneClick}
         />
 
@@ -104,7 +104,7 @@ const TaskView = () => {
         {/* Issue Number */}
         <div className="mt-2">
           <TaskProperty
-            loading={loading}
+            isLoading={isLoading}
             icon={BiHash}
             title="Issue number"
             content={issueNumber}
@@ -113,7 +113,7 @@ const TaskView = () => {
         </div>
         {/* Issue Created Time */}
         <TaskProperty
-          loading={loading}
+          isLoading={isLoading}
           icon={BiTimeFive}
           title="Created at"
           content={createdTime}
@@ -122,7 +122,7 @@ const TaskView = () => {
 
         {/* Task Status */}
         <TaskProperty
-          loading={loading}
+          isLoading={isLoading}
           icon={BiCollection}
           title="Status"
           content={
@@ -136,13 +136,13 @@ const TaskView = () => {
         />
 
         {/* Task Body */}
-        {loading ? (
+        {isLoading ? (
           <div className="flex flex-row justify-center">
             <div className="mx-10 flex h-[500px] w-8 flex-col justify-center leading-9 text-zinc-600">
               <LoadAnimation />
             </div>
           </div>
-        ) : editing ? (
+        ) : isEditing ? (
           <div className="mt-2.5 min-h-[480px] w-full rounded-lg border-2 border-zinc-600 bg-[#2c2c2cc3] shadow-inner shadow-[#0c0c0c] ">
             <textarea
               className={`h-full min-h-[480px] w-full bg-transparent px-[26px] pt-5 leading-7 text-zinc-300 outline-none ${

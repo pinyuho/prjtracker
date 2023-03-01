@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 
 import { IIssue, IRepo, TaskStatus } from "../types";
 
@@ -13,10 +13,10 @@ interface RepoViewBarProps {
   setFilterStatus: (status: TaskStatus) => void;
 
   isDescending: boolean;
-  setIsDescending: Dispatch<SetStateAction<boolean>>;
+  setIsDescending: (isDescending: boolean) => void;
 
-  setIssuesAll: Dispatch<SetStateAction<IIssue[]>>;
-  setLoading: Dispatch<SetStateAction<boolean>>;
+  setIssuesAll: (issuesAll: IIssue[]) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 const TaskFilterBar = ({

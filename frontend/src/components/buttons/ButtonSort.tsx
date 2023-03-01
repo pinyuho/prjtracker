@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 
 import { HiSortAscending, HiSortDescending } from "react-icons/hi";
 
@@ -6,13 +6,13 @@ import useHover from "../../hooks/useHover";
 
 interface ButtonSortProps {
   isDescending: boolean;
-  setIsDescending: Dispatch<SetStateAction<boolean>>;
+  setIsDescending: (decending: boolean) => void;
   className?: string;
 }
 
 const ButtonSort = ({
   isDescending,
-  setIsDescending,
+  setIsDescending: setIsDescending,
   className
 }: ButtonSortProps) => {
   const [onHover, handleMouseOver, handleMouseOut] = useHover();

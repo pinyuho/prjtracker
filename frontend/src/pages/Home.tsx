@@ -11,7 +11,7 @@ const Home = () => {
   const { username, setUsername, setAvatarUrl } = useUserContext();
 
   const [repos, setRepos] = useState<IRepo[]>();
-  const { setLoading, getUserData, getRepos } = useGithubApi();
+  const { setIsLoading, getUserData, getRepos } = useGithubApi();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -25,7 +25,7 @@ const Home = () => {
       setRepos(data);
     };
 
-    setLoading(true);
+    setIsLoading(true);
     if (username === "") {
       fetchUser();
     }
@@ -36,7 +36,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col">
-      <HomeBar repos={repos} setLoading={setLoading} />
+      <HomeBar repos={repos} setIsLoading={setIsLoading} />
       <div className="mt-8 flex h-[450px] items-center justify-center">
         <div className="rounded-lg border-2 border-dashed border-zinc-800 py-1 px-4 text-zinc-500">
           Please choose a repository.

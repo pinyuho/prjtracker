@@ -1,10 +1,9 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { IconCustom } from "../context/IconContext";
 
-import useModal from "../hooks/useModal";
 import useGithubApi from "../hooks/useGithubApi";
 
 import ModalDelete from "./modals/ModalDelete";
@@ -12,11 +11,11 @@ import ModalDelete from "./modals/ModalDelete";
 interface TaskViewHeaderProps {
   title: string;
   inputTitle: string;
-  setInputTitle: Dispatch<SetStateAction<string>>;
+  setInputTitle: (inputTitle: string) => void;
 
-  loading: boolean;
-  editing: boolean;
-  setEditing: Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
+  isEditing: boolean;
+  setIsEditing: (editing: boolean) => void;
   handleDoneClick: () => void;
 }
 const TaskViewHeader = ({
@@ -24,15 +23,15 @@ const TaskViewHeader = ({
   inputTitle,
   setInputTitle,
 
-  loading,
-  editing,
-  setEditing,
+  isLoading,
+  isEditing: editing,
+  setIsEditing: setEditing,
   handleDoneClick
 }: TaskViewHeaderProps) => {
   const navigate = useNavigate();
   const { repoOwner, repoName, issueNumber } = useParams();
 
-  const [showModal, setShowModal] = useModal();
+  const [showModal, setShowModal] = useState(false);
   const { deleteIssue } = useGithubApi();
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +62,7 @@ const TaskViewHeader = ({
         </div>
 
         {/* Task Title */}
-        {!loading &&
+        {!isLoading &&
           (editing ? (
             <div className="mx-2 h-9 w-full truncate">
               <input
@@ -86,7 +85,7 @@ const TaskViewHeader = ({
       </div>
 
       {/* Edit Buttons */}
-      {!loading &&
+      {!isLoading &&
         (editing ? (
           <>
             <button

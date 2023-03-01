@@ -4,8 +4,8 @@ import { useEventListener } from "usehooks-ts";
 
 type Handler = (event: MouseEvent) => void;
 
-function useClickOutside<T extends HTMLElement = HTMLElement>(
-  ref: RefObject<T>,
+function useClickOutside(
+  ref: RefObject<HTMLElement>,
   handler: Handler,
   mouseEvent: "mousedown" | "mouseup" = "mousedown"
 ): void {

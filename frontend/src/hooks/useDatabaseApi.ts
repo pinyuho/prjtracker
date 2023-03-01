@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 import qs from "qs";
 
 import { AxiosError } from "axios";
@@ -7,14 +7,15 @@ import agent from "../agent";
 import { ITaskRaw, TaskStatus } from "../types";
 
 const useDatabaseApi = () => {
-  const [rerender, setRerender] = useState(false);
+  // const [rerender, setRerender] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
 
-  const addTasks = async (tasks: ITaskRaw[]) => {
+  const addTasks = async (issueIds: number[]) => {
     try {
       const { data } = await agent.post(
         `/db/tasks`,
-        tasks, // req.body
+        issueIds, // req.body
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`

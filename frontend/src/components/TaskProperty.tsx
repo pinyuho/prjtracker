@@ -1,19 +1,19 @@
-import React, { Dispatch, ReactNode, SetStateAction } from "react";
+import React, { ReactNode } from "react";
 
 import { IconCustom } from "../context/IconContext";
 
 interface TaskPropertyProps {
-  loading: boolean;
+  isLoading: boolean;
   icon: any;
   title: string;
   content: string | ReactNode;
   isContentTextStyle: boolean;
 
   isDropdownOpen?: boolean;
-  setIsDropdownOpen?: Dispatch<SetStateAction<boolean>>;
+  setIsDropdownOpen?: (isDropdownOpen: boolean) => void;
 }
 const TaskProperty = ({
-  loading,
+  isLoading: loading,
   icon,
   title,
   content,

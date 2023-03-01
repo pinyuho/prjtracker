@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { ITask, IRepo, IIssue, TaskStatus, ITaskRaw } from "../types";
 
 import { ascendingOrder, descendingOrder } from "../utils/sortOrder";
+import Task from "../components/panels/Task";
 
-import useModal from "../hooks/useModal";
 import useGithubApi from "../hooks/useGithubApi";
-import useDatabaseApi from "../hooks/useDatabaseApi";
 
 import RepoViewBar from "../components/RepoViewBar";
 import TaskList from "../components/panels/TaskList";
@@ -16,79 +15,62 @@ import ButtonAdd from "../components/buttons/ButtonAdd";
 import ModalEdit from "../components/modals/ModalEdit";
 import ModalAdd from "../components/modals/ModalAdd";
 
+import useTasks from "../hooks/useTasks";
+
 const RepoView = () => {
+  const { repoOwner, repoName } = useParams();
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const { tasks, hasMore, isScrollLoading, isError } = useTasks(pageNumber);
+  const observer = useRef<any>();
+  const lastTaskRef = useCallback(
+    (node: Node) => {
+      if (isScrollLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isScrollLoading, hasMore]
+  );
+
   const [repos, setRepos] = useState<IRepo[]>();
   const [statusFilter, setStatusFilter] = useState<TaskStatus>("");
+  const [tasksFiltered, setTasksFiltered] = useState<ITask[]>([]);
   const [issuesAll, setIssuesAll] = useState<IIssue[]>([]);
-  const [issuesFilterd, setIssuesFiltered] = useState<IIssue[]>([]);
   const [isDescending, setIsDescending] = useState<boolean>(true);
-
-  const [tasksStatus, setTasksStatus] = useState<ITaskRaw[]>([]);
 
   const [editTitle, setEditTitle] = useState("");
   const [editBody, setEditBody] = useState("");
   const [editIssueNumber, setEditIssueNumber] = useState(0);
 
-  const [showEditModal, setShowEditModal] = useModal();
-  const [showAddModal, setShowAddModal] = useModal();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
-  const { repoOwner, repoName } = useParams();
-
-  const { loading, setLoading, getRepos, getIssues } = useGithubApi();
-  const { addTasks, batchReadTasks } = useDatabaseApi();
-
-  const fetchRepos = async () => {
-    const data: any = await getRepos();
-    setRepos(data);
-  };
-
-  const fetchIssues = async (repoOwner: string, repoName: string) => {
-    const data: any = await getIssues(repoOwner, repoName);
-    setIssuesAll(data);
-    console.log("Adding to db...");
-    if (data && data.length > 0) {
-      await addTasks(
-        data.map(
-          (issue: IIssue) => ({ issueId: Number(issue.id) } as ITaskRaw) // default: open
-        )
-      );
-
-      const issueIds = data.map((issue: IIssue) => Number(issue.id));
-      const tasks: any = await batchReadTasks(issueIds);
-      setTasksStatus(
-        tasks.map(
-          (task: any) =>
-            ({
-              issueId: task.issueId,
-              status: task.status
-            } as ITaskRaw)
-        )
-      );
-    }
-  };
+  const { isLoading, setIsLoading, getRepos } = useGithubApi();
 
   useEffect(() => {
-    setLoading(true);
+    const fetchRepos = async () => {
+      const data: any = await getRepos();
+      setRepos(data);
+    };
+
+    setIsLoading(true);
     if (!repos) {
       fetchRepos();
-    }
-    if (repoOwner && repoName) {
-      fetchIssues(repoOwner, repoName);
-
-      console.log("Fetching issues...");
     }
   }, [window.location.pathname]);
 
   useEffect(() => {
     if (statusFilter !== "") {
-      setIssuesFiltered(
-        issuesAll?.filter(
-          (issue: IIssue) =>
-            tasksStatus?.find((item) => item.issueId === issue.id)?.status ===
-            statusFilter
-        )
+      setTasksFiltered(
+        tasks?.filter((task: ITask) => task.status === statusFilter)
       );
-    } else setIssuesFiltered(issuesAll);
+    } else setTasksFiltered(tasks);
+    console.log("taskss here:", tasks);
   }, [statusFilter]);
 
   return (
@@ -99,47 +81,68 @@ const RepoView = () => {
         setFilterStatus={setStatusFilter}
         isDescending={isDescending}
         setIsDescending={setIsDescending}
-        setIssuesAll={setIssuesAll}
-        setLoading={setLoading}
+        setIssuesAll={setIssuesAll} // FIXME: search box
+        setLoading={setIsLoading}
       />
 
-      {loading ? (
+      {isLoading ? (
         <div
           role="status"
           className="mt-8 flex h-[450px] items-center justify-center"
         >
           <LoadAnimation />
         </div>
-      ) : (statusFilter === "" ? issuesAll : issuesFilterd)?.length === 0 ? (
-        <div className="mt-8 flex h-[450px] items-center justify-center ">
+      ) : tasks.length === 0 ? (
+        <div className="mt-8 flex h-[450px] items-center justify-center">
           <div className="rounded-lg border-2 border-dashed border-zinc-800 py-1 px-4 text-zinc-500">
             There are no issues.
           </div>
         </div>
       ) : (
-        <TaskList
-          setLoading={setLoading}
-          setShowModal={setShowEditModal}
-          setEditTitle={setEditTitle}
-          setEditBody={setEditBody}
-          setEditIssueNumber={setEditIssueNumber}
-          tasks={(statusFilter === "" ? issuesAll : issuesFilterd)
-            ?.map(
-              (issue) =>
-                ({
-                  issueId: issue.id,
-                  title: issue.title,
-                  status:
-                    tasksStatus?.find((item) => item.issueId === issue.id)
-                      ?.status || "",
-                  createdTime: issue.created_at,
-                  body: issue.body,
-                  repo: repoName,
-                  number: issue.number
-                } as ITask)
-            )
-            .sort(isDescending ? descendingOrder : ascendingOrder)}
-        />
+        <div className="mx-8 my-4 grid w-11/12 grid-cols-1 gap-4 self-center md:w-[1100px]">
+          {tasks
+            .sort(isDescending ? descendingOrder : ascendingOrder)
+            .map((task: ITask, index: number) => {
+              if (tasks.length === index + 1) {
+                return (
+                  <Task
+                    refScroll={lastTaskRef}
+                    key={task.issueId}
+                    issueId={task.issueId}
+                    title={task.title}
+                    status={task.status}
+                    createdTime={task.createdTime}
+                    body={task.body}
+                    repo={task.repo}
+                    number={task.number}
+                    setIsLoading={setIsLoading}
+                    setShowEditModal={setShowEditModal}
+                    setEditTitle={setEditTitle}
+                    setEditBody={setEditBody}
+                    setEditIssueNumber={setEditIssueNumber}
+                  />
+                );
+              } else {
+                return (
+                  <Task
+                    key={task.issueId}
+                    issueId={task.issueId}
+                    title={task.title}
+                    status={task.status}
+                    createdTime={task.createdTime}
+                    body={task.body}
+                    repo={task.repo}
+                    number={task.number}
+                    setIsLoading={setIsLoading}
+                    setShowEditModal={setShowEditModal}
+                    setEditTitle={setEditTitle}
+                    setEditBody={setEditBody}
+                    setEditIssueNumber={setEditIssueNumber}
+                  />
+                );
+              }
+            })}
+        </div>
       )}
 
       {/* Add Task Button */}

@@ -4,8 +4,8 @@ import Task from "./Task";
 import { ITask } from "../../types";
 
 interface TaskListProps {
-  setLoading: (loading: boolean) => void;
-  setShowModal: (showModal: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
+  setShowEditModal: (showEditModal: boolean) => void;
   setEditTitle: (editTitle: string) => void;
   setEditBody: (editBody: string) => void;
   setEditIssueNumber: (editIssueNumber: number) => void;
@@ -14,8 +14,8 @@ interface TaskListProps {
 }
 
 const TaskList = ({
-  setLoading,
-  setShowModal,
+  setIsLoading,
+  setShowEditModal,
   setEditTitle,
   setEditBody,
   setEditIssueNumber,
@@ -23,16 +23,6 @@ const TaskList = ({
 }: TaskListProps) => {
   return (
     <div className="mx-8 my-4 grid w-11/12 grid-cols-1 gap-4 self-center sm:grid-cols-2 md:w-[1100px] md:grid-cols-3">
-      {/* <InfiniteScroll
-        pageStart={0}
-        loadMore={getIssues(repoSelected)}
-        hasMore={true || false}
-        loader={
-          <div className="loader" key={0}>
-            Loading ...
-          </div>
-        }
-      > */}
       {tasks?.map((task) => (
         <Task
           key={task.issueId}
@@ -43,14 +33,13 @@ const TaskList = ({
           body={task.body}
           repo={task.repo}
           number={task.number}
-          setLoading={setLoading}
-          setShowModal={setShowModal}
+          setIsLoading={setIsLoading}
+          setShowEditModal={setShowEditModal}
           setEditTitle={setEditTitle}
           setEditBody={setEditBody}
           setEditIssueNumber={setEditIssueNumber}
         />
       ))}
-      {/* </InfiniteScroll> */}
     </div>
   );
 };

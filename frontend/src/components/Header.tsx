@@ -16,8 +16,8 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
   const {
     rerender,
     setRerender,
-    loading,
-    setLoading,
+    isLoading,
+    setIsLoading,
     loginWithGithub,
     getUserData
   } = useGithubApi();
@@ -35,7 +35,7 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
       (username === "" || avatarUrl === "")
     ) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setLoading(true);
+      setIsLoading(true);
       fetchUser();
     }
   }, [localStorage.getItem("accessToken")]);
@@ -87,7 +87,7 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
         </div>
       ) : (
         <>
-          {username === "" && loading ? (
+          {username === "" && isLoading ? (
             <div className="mx-4 self-center font-mono text-sm text-zinc-400 duration-75">
               loading...
             </div>
@@ -102,7 +102,7 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
               <div
                 className="select-none self-center p-2 font-mono text-sm text-zinc-400"
                 onClick={() => {
-                  // setLoading(true);
+                  // setIsLoading(true);
                   loginWithGithub();
                   setRerender(!rerender);
                 }}

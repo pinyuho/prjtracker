@@ -1,16 +1,10 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  Dispatch,
-  SetStateAction
-} from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type UserContextType = {
   username: string;
-  setUsername: Dispatch<SetStateAction<string>>;
+  setUsername: (username: string) => void;
   avatarUrl: string;
-  setAvatarUrl: Dispatch<SetStateAction<string>>;
+  setAvatarUrl: (username: string) => void;
 };
 
 export const UserContext = createContext({} as UserContextType);
