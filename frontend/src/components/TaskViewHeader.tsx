@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { IconCustom } from "../context/IconContext";
 
 import useGithubApi from "../hooks/useGithubApi";
+import useMobile from "../hooks/useMobile";
 
 import ModalDelete from "./modals/ModalDelete";
 
@@ -12,32 +13,32 @@ interface TaskViewHeaderProps {
   title: string;
   inputTitle: string;
   setInputTitle: (inputTitle: string) => void;
+  issueUrl: string;
 
   isLoading: boolean;
   isEditing: boolean;
   setIsEditing: (editing: boolean) => void;
   handleDoneClick: () => void;
+  handleInputTitle: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 const TaskViewHeader = ({
   title,
   inputTitle,
   setInputTitle,
+  issueUrl,
 
   isLoading,
-  isEditing: editing,
-  setIsEditing: setEditing,
-  handleDoneClick
+  isEditing,
+  setIsEditing,
+  handleDoneClick,
+  handleInputTitle
 }: TaskViewHeaderProps) => {
   const navigate = useNavigate();
   const { repoOwner, repoName, issueNumber } = useParams();
 
   const [showModal, setShowModal] = useState(false);
   const { deleteIssue } = useGithubApi();
-
-  const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setInputTitle(event.target.value);
-  };
+  const { isMobile } = useMobile();
 
   const handleDeleteClick = async () => {
     if (repoOwner && repoName && issueNumber) {
@@ -62,8 +63,9 @@ const TaskViewHeader = ({
         </div>
 
         {/* Task Title */}
-        {!isLoading &&
-          (editing ? (
+        {!isMobile &&
+          !isLoading &&
+          (isEditing ? (
             <div className="mx-2 h-9 w-full truncate">
               <input
                 className="h-full w-full rounded-md border-2 border-zinc-600 bg-[#2c2c2cc3] px-1.5 text-left text-lg font-semibold 
@@ -86,13 +88,13 @@ const TaskViewHeader = ({
 
       {/* Edit Buttons */}
       {!isLoading &&
-        (editing ? (
+        (isEditing ? (
           <>
             <button
-              className="mx-1 mt-[3px] flex h-8 flex-row rounded bg-[#4443433e] px-6 opacity-60 hover:opacity-90 active:opacity-60"
-              onClick={() => setEditing(false)}
+              className="mx-1 mt-[4px] flex h-[30px] flex-row rounded bg-[#4443433e] px-6 opacity-60 hover:opacity-90 active:opacity-60"
+              onClick={() => setIsEditing(false)}
             >
-              <div className="self-center text-sm font-bold uppercase leading-8 text-zinc-500 ">
+              <div className="self-center text-sm font-bold uppercase leading-8 text-zinc-500">
                 Cancel
               </div>
             </button>
@@ -109,7 +111,7 @@ const TaskViewHeader = ({
           <>
             <button
               className="mx-1 mt-[5px] flex h-7 flex-row rounded bg-zinc-200 px-6 outline-none hover:bg-zinc-100 active:bg-[#c0bebe]"
-              onClick={() => setEditing(true)}
+              onClick={() => setIsEditing(true)}
             >
               <div className="text-sm font-bold uppercase leading-7 text-[#858585]">
                 Edit
@@ -129,6 +131,7 @@ const TaskViewHeader = ({
             {/* Modal Span */}
             {showModal && (
               <ModalDelete
+                issueUrl={issueUrl}
                 setShowModal={setShowModal}
                 handleDeleteClick={() => {
                   if (repoOwner && repoName && issueNumber) handleDeleteClick();

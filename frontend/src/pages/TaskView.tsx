@@ -10,6 +10,7 @@ import { IIssue, TaskStatus } from "../types";
 
 import useGithubApi from "../hooks/useGithubApi";
 import useDatabaseApi from "../hooks/useDatabaseApi";
+import useMobile from "../hooks/useMobile";
 
 import LoadAnimation from "../components/utils/LoadAnimation";
 import SwitchStatus from "../components/dropdowns/SwitchStatus";
@@ -31,6 +32,7 @@ const TaskView = () => {
   const [status, setStatus] = useState<TaskStatus>("");
 
   const { repoOwner, repoName, issueNumber } = useParams();
+  const { isMobile } = useMobile();
 
   const { isLoading, setIsLoading, getIssue, updateIssue } = useGithubApi();
   const { getTaskStatus } = useDatabaseApi();
@@ -63,6 +65,11 @@ const TaskView = () => {
     }
   }, []);
 
+  const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    setInputTitle(event.target.value);
+  };
+
   const handleInputBody = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     event.preventDefault();
     setInputBody(event.target.value);
@@ -94,11 +101,35 @@ const TaskView = () => {
           title={issue?.title}
           inputTitle={inputTitle}
           setInputTitle={setInputTitle}
+          issueUrl={issue?.html_url}
           isLoading={isLoading}
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           handleDoneClick={handleDoneClick}
+          handleInputTitle={handleInputTitle}
         />
+
+        {/* Task Title for Mobile */}
+        {isMobile &&
+          !isLoading &&
+          (isEditing ? (
+            <div className="mx-2 h-[52px] w-full truncate">
+              <input
+                className="mt-4 h-9 w-full rounded-md border-2 border-zinc-600 bg-[#2c2c2cc3] px-1.5 text-left text-lg font-semibold 
+                leading-7 text-zinc-300 shadow-inner shadow-[#0c0c0c] outline-none placeholder-shown:border-red-500"
+                type="text"
+                onChange={handleInputTitle}
+                defaultValue={inputTitle}
+                placeholder=" "
+              />
+            </div>
+          ) : (
+            <div className="mt-4 ml-4 h-9 w-full">
+              <div className="h-full w-full overflow-hidden text-ellipsis text-left text-lg font-semibold leading-9 text-zinc-300 line-clamp-1">
+                {issue?.title}
+              </div>
+            </div>
+          ))}
 
         {/* Task Properties */}
         {/* Issue Number */}

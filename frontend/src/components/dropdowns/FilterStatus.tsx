@@ -10,12 +10,14 @@ import { TaskStatus } from "../../types";
 interface FilterStatusHeaderProps {
   filterStatus: TaskStatus;
   setFilterStatus: (status: TaskStatus) => void;
+  isMobile?: boolean;
   className?: string;
 }
 
 const FilterStatus = ({
   filterStatus,
   setFilterStatus,
+  isMobile,
   className
 }: FilterStatusHeaderProps) => {
   const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
@@ -27,7 +29,6 @@ const FilterStatus = ({
   };
 
   const handleClearStatus = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("click delete at LabelStatus");
     setFilterStatus("");
     setIsDropdownOpen(false);
 
@@ -38,8 +39,10 @@ const FilterStatus = ({
     <div ref={ref} className={`${className}`}>
       {/* Filter Button */}
       <div
-        className="mt-2 flex h-8 w-max flex-row justify-between rounded-l border-r-[1px] border-zinc-700 bg-zinc-800 px-4 
-        text-zinc-300 opacity-80 shadow-sm shadow-zinc-700 outline-none ring-0 hover:bg-zinc-700 "
+        className={`my-2 flex h-8 w-max flex-row justify-between ${
+          isMobile ? `rounded` : `rounded-l border-r-[1px]`
+        }  border-zinc-700 bg-zinc-800 px-4 
+        text-zinc-300 opacity-80 shadow-sm shadow-zinc-700 outline-none ring-0 hover:bg-zinc-700`}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
       >
@@ -47,7 +50,6 @@ const FilterStatus = ({
           className="flex h-8 w-full justify-center"
           onClick={() => {
             setIsDropdownOpen(!isDropdownOpen);
-            console.log("Big button triggered.");
           }}
         >
           {filterStatus === "" ? (

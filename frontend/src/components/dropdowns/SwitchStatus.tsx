@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 import { TaskStatus } from "../../types";
 
@@ -11,64 +10,64 @@ import LabelStatus from "../utils/LabelStatus";
 interface FilterStatusTaskProps {
   issueId: number;
   status: TaskStatus;
+
   setStatus?: (status: TaskStatus) => void;
   setIsLoading?: (loading: boolean) => void;
+  handleTaskStatusChange?: (issueId: number, newStatus: TaskStatus) => void; // for RepoView page
 }
 
 const SwitchStatus = ({
   issueId,
   status,
   setStatus,
-  setIsLoading
+  setIsLoading,
+  handleTaskStatusChange
 }: FilterStatusTaskProps) => {
-  const navigate = useNavigate();
   const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
   const { editTaskStatus } = useDatabaseApi();
 
   const patchTaskStatus = async (issueId: number, taskStatus: TaskStatus) => {
     await editTaskStatus(issueId, taskStatus);
-  };
-
-  // Handle Option Click
-  const handleInProgressClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const taskStatus = "in-progress";
-
-    if (setIsLoading) setIsLoading(true);
-    patchTaskStatus(Number(issueId), taskStatus);
-    if (setStatus) setStatus(taskStatus); // for TaskView page
-    setIsDropdownOpen(false);
-    e.stopPropagation();
-
-    navigate(0); // refresh page: TaskView
-  };
-
-  const handleOpenClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const taskStatus = "open";
-
-    if (setIsLoading) setIsLoading(true);
-    patchTaskStatus(Number(issueId), taskStatus);
-    if (setStatus) setStatus(taskStatus); // for TaskView page
-    setIsDropdownOpen(false);
-    e.stopPropagation();
-
-    navigate(0); // refresh page: TaskView
-  };
-
-  const handleDoneClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const taskStatus = "done";
-
-    if (setIsLoading) setIsLoading(true);
-    patchTaskStatus(Number(issueId), taskStatus);
-    if (setStatus) setStatus(taskStatus); // for TaskView page
-    setIsDropdownOpen(false);
-    e.stopPropagation();
-
-    navigate(0); // refresh page: TaskView
+    if (setIsLoading) setIsLoading(false);
   };
 
   const handleHeaderClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsDropdownOpen(!isDropdownOpen);
     e.stopPropagation();
+  };
+
+  // Handle Options Click
+  const handleClick = (taskStatus: TaskStatus) => {
+    if (setIsLoading) {
+      setIsLoading(true);
+    }
+    patchTaskStatus(Number(issueId), taskStatus);
+
+    if (handleTaskStatusChange) {
+      handleTaskStatusChange(Number(issueId), taskStatus); // for RepoView page
+    }
+    if (setStatus) {
+      setStatus(taskStatus); // for TaskView page
+    }
+    setIsDropdownOpen(false);
+  };
+
+  const handleInProgressClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    handleClick("in-progress");
+    e.stopPropagation();
+    // navigate(0); // refresh page: TaskView
+  };
+
+  const handleOpenClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    handleClick("open");
+    e.stopPropagation();
+    // navigate(0); // refresh page: TaskView
+  };
+
+  const handleDoneClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    handleClick("done");
+    e.stopPropagation();
+    // navigate(0); // refresh page: TaskView
   };
 
   return (
@@ -78,7 +77,7 @@ const SwitchStatus = ({
         className="ml-1 flex h-7 w-max flex-row justify-between rounded border-zinc-700 bg-transparent px-1 
         text-zinc-300 opacity-80 outline-none ring-0 hover:bg-zinc-700 "
       >
-        <button className=" h-full w-full" onClick={handleHeaderClick}>
+        <button className="h-full w-full" onClick={handleHeaderClick}>
           {status === "" ? (
             <div className="flex w-full justify-center p-0.5">-</div>
           ) : (
@@ -113,5 +112,4 @@ const SwitchStatus = ({
     </div>
   );
 };
-
 export default SwitchStatus;

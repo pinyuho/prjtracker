@@ -1,4 +1,4 @@
-import React, { useState, useRef, RefObject } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useUserContext } from "../../context/UserContext";
@@ -31,6 +31,9 @@ export interface TaskProps {
   setEditTitle: (title: string) => void;
   setEditBody: (body: string) => void;
   setEditIssueNumber: (issueNumber: number) => void;
+
+  // For RepoView page
+  handleTaskStatusChange: (issueId: number, newStatus: TaskStatus) => void;
 }
 
 const Task = ({
@@ -47,7 +50,8 @@ const Task = ({
 
   setEditTitle,
   setEditBody,
-  setEditIssueNumber
+  setEditIssueNumber,
+  handleTaskStatusChange
 }: TaskProps) => {
   const navigate = useNavigate();
 
@@ -134,6 +138,7 @@ const Task = ({
             issueId={issueId}
             status={status}
             setIsLoading={setIsLoading}
+            handleTaskStatusChange={handleTaskStatusChange}
           />
         </div>
         {/* Task Body */}

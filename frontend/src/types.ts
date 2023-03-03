@@ -31,6 +31,7 @@ export interface IIssue {
   state: "open" | "closed"; // default: "open"
   labels: string[];
   number: number;
+  html_url: string;
 }
 
 export interface IRepo {

@@ -20,7 +20,7 @@ const LabelStatus = ({
   switch (status) {
     case "in-progress":
       return (
-        <div className="z-50 my-1 flex h-5 w-max select-none  flex-row rounded-md bg-[#314c7b] p-0 sm:p-1">
+        <div className="z-50 my-1 flex h-5 w-max select-none  flex-row rounded-md bg-[#314c7b] p-1">
           <div className="mx-1 h-1.5 w-1.5 self-center rounded-full bg-blue-400"></div>
           <div className="mx-1 h-5 self-center truncate text-ellipsis text-xs font-medium leading-5 text-white">
             In Progress

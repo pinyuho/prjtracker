@@ -3,12 +3,21 @@ import React, { useRef } from "react";
 import useOnClickOutside from "../../hooks/useClickOutside";
 
 interface ModalProps {
+  issueUrl: string;
   setShowModal: (showModal: boolean) => void;
   handleDeleteClick: () => void;
 }
-const ModalDelete = ({ setShowModal, handleDeleteClick }: ModalProps) => {
+const ModalDelete = ({
+  issueUrl,
+  setShowModal,
+  handleDeleteClick
+}: ModalProps) => {
   const ref = useRef(null);
   useOnClickOutside(ref, () => setShowModal(false));
+
+  const openInNewTab = (url: string) => {
+    window.open(url, "_blank", "noreferrer");
+  };
 
   return (
     <div>
@@ -32,7 +41,14 @@ const ModalDelete = ({ setShowModal, handleDeleteClick }: ModalProps) => {
                 Are you sure you want to delete this task? <br />
                 Deletion means this github issue would be closed and no longer
                 visible on our website. However, you can still check the closed
-                issue on your own github page.
+                issue on{" "}
+                <div
+                  className="inline-block underline hover:cursor-pointer hover:text-zinc-200"
+                  onClick={() => openInNewTab(issueUrl)}
+                >
+                  your own github page
+                </div>
+                .
               </p>
             </div>
 

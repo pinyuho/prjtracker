@@ -5,11 +5,11 @@ import qs from "qs";
 const router = express.Router();
 
 router.post("/tasks", async (req, res) => {
-  const tasks = req.body;
-  const bulkUpdateOps = tasks.map((task) => {
+  const issueIds = req.body;
+  const bulkUpdateOps = issueIds.map((issueId) => {
     return {
       updateOne: {
-        filter: { issueId: task.issueId },
+        filter: { issueId: issueId },
         update: { $setOnInsert: { status: "open" } },
         upsert: true,
       },

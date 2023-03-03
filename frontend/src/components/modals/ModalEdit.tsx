@@ -39,13 +39,13 @@ const ModalTask = ({
     setInputBody(event.target.value);
   };
 
-  const handleEditClick = () => {
+  const handleEditClick = async () => {
     if (inputTitle === "") {
       alert("Title cannot be empty!");
     } else if (inputBody === null || inputBody?.length < MIN_BODY_LENGTH) {
       alert("Body must be at least 30 characters");
     } else if (repoOwner && repoName && issueNumber) {
-      updateIssue(
+      await updateIssue(
         repoOwner,
         repoName,
         Number(issueNumber),

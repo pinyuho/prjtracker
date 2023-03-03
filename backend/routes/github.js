@@ -49,9 +49,10 @@ router.get("/user", async function (req, res) {
     });
 });
 
-// getRepos : Create a repository for the authenticated user
+// getRepos : Get repositories for the authenticated user
 router.get("/repos", async function (req, res) {
-  await fetch(`https://api.github.com/user/repos`, {
+  const type = "owner";
+  await fetch(`https://api.github.com/user/repos?type=${type}`, {
     method: "GET",
     headers: {
       Authorization: req.get("Authorization"),
@@ -72,8 +73,12 @@ router.get("/repos", async function (req, res) {
 
 // getIssues
 router.get("/issues/:owner/:repo", async function (req, res) {
+  const sort = "created";
+  const direction = "desc";
+
   await fetch(
-    `https://api.github.com/repos/${req.params.owner}/${req.params.repo}/issues`,
+    `https://api.github.com/repos/${req.params.owner}/${req.params.repo}/issues` +
+      `?per_page=${req.query.per_page}&page=${req.query.page}&sort=${sort}&direction=${direction}`,
     {
       method: "GET",
       headers: {

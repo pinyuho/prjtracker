@@ -13,7 +13,7 @@ const useGithubApi = () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const codeParam = urlParams.get("code");
-    console.log("code param: ", codeParam);
+    // console.log("code param: ", codeParam);
 
     const getAccessToken = async () => {
       try {
@@ -68,7 +68,7 @@ const useGithubApi = () => {
 
   const getRepos = async () => {
     try {
-      const { data } = await agent.get("/github/repos", {
+      const { data } = await agent.get(`/github/repos`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }
@@ -100,12 +100,14 @@ const useGithubApi = () => {
         }
       );
       console.log("Issues:", data);
+      console.log("set loading false");
       setIsLoading(false);
 
       return data;
     } catch (error) {
       const err = error as AxiosError;
       console.log("error: ", err.response?.data);
+
       return;
     }
   };
@@ -200,7 +202,6 @@ const useGithubApi = () => {
       const { data } = await agent.get(`/github/search/issues/${query}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          // Accept: "application/vnd.github.text-match+json" // FIXME: text-match hightlight
         }
       });
       console.log("Searched Issue:", data);

@@ -48,10 +48,10 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
   };
 
   return (
-    <div className="flex h-16 flex-row justify-between bg-zinc-800 drop-shadow-md">
+    <div className="flex h-16 w-full flex-row justify-between bg-zinc-800 drop-shadow-md">
       {/* Project Title */}
       <div
-        className="h-16 p-3 pl-7 font-mono text-xl font-bold leading-10 text-white hover:cursor-pointer"
+        className="text-md flex flex-col self-center pl-4 font-mono font-bold text-white hover:cursor-pointer sm:pl-7 sm:text-xl"
         onClick={() => navigate("/")}
       >
         prjtracker
@@ -59,10 +59,7 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
 
       {isLoggedIn ? (
         <div className="flex w-max flex-row justify-center self-center">
-          <div
-            className="mx-2 font-mono text-sm leading-9
-            text-zinc-200"
-          >
+          <div className="mx-2 font-mono text-sm leading-9 text-zinc-200">
             <div className="flex flex-row">
               {/* User Information */}
               <img
@@ -73,13 +70,13 @@ const Header = ({ isLoggedIn }: HeaderProps) => {
 
               {/* Logout Icon */}
               <div
-                className="ml-2 mt-1 flex h-7 w-7 opacity-20 hover:cursor-pointer hover:opacity-80"
+                className="mt-1 h-7 w-7 opacity-20 hover:cursor-pointer hover:opacity-80"
                 onClick={logout}
               >
                 <IconCustom
                   Icon={FiLogOut}
                   color={"white"}
-                  className="mx-0.5 mt-1.5 h-4 w-full self-center opacity-70"
+                  className="ml-0.5 mt-1.5 h-4 w-full self-center opacity-70"
                 />
               </div>
             </div>

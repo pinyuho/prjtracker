@@ -3,6 +3,7 @@ import React from "react";
 import { HiSortAscending, HiSortDescending } from "react-icons/hi";
 
 import useHover from "../../hooks/useHover";
+import useMobile from "../../hooks/useMobile";
 
 interface ButtonSortProps {
   isDescending: boolean;
@@ -16,6 +17,7 @@ const ButtonSort = ({
   className
 }: ButtonSortProps) => {
   const [onHover, handleMouseOver, handleMouseOut] = useHover();
+  const { isMobile } = useMobile();
 
   return (
     <div className={`self-center ${className}`}>
@@ -32,8 +34,8 @@ const ButtonSort = ({
           <HiSortAscending className="mt-1 w-8 self-center" />
         )}
       </button>
-      {onHover && (
-        <div className="absolute -m-[55px] h-6 w-max pl-4 text-xs text-zinc-500 opacity-30">
+      {onHover && !isMobile && (
+        <div className="absolute -m-[52px] h-6 w-max pl-4 text-xs text-zinc-500 opacity-30">
           Sort by Creation time
         </div>
       )}

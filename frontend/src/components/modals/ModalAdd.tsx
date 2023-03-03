@@ -31,13 +31,14 @@ const ModalAdd = ({ setShowAddModal }: ModalAddProps) => {
     setInputBody(event.target.value);
   };
 
-  const handleAddClick = () => {
+  const handleAddClick = async () => {
     if (inputTitle === "") {
       alert("Title cannot be empty!");
     } else if (inputBody === null || inputBody?.length < MIN_BODY_LENGTH) {
       alert("Body must be at least 30 characters");
     } else if (repoOwner && repoName) {
-      addIssue(repoOwner, repoName, inputTitle, inputBody);
+      await addIssue(repoOwner, repoName, inputTitle, inputBody);
+      console.log("Added issue");
       setShowAddModal(false);
       navigate(0); // refresh page
     }
