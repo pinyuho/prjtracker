@@ -71,7 +71,7 @@ const FilterStatus = ({
       {/* Filter Dropdown */}
       {isDropdownOpen && (
         <div
-          className={`absolute z-10 mt-2 flex w-32 flex-col rounded bg-zinc-700 p-0.5`}
+          className={`absolute z-10 flex w-32 flex-col rounded bg-zinc-700 p-0.5`}
         >
           <div
             className="flex justify-center rounded px-3 hover:bg-zinc-500"
