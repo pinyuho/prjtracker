@@ -2,7 +2,7 @@
 
 ## About the project
 
-This project is for managing github issues moe effeiciently. Frontend using **React Native** and **TypeScript**. Backend using **JavaScript** and cloud database (**MongoDB** in this project) to save/update the issue-related status.
+This project is for managing github issues moe efficiently. Frontend using **React Native** and **TypeScript**. Backend using **JavaScript** and cloud database (**MongoDB** in this project) to save/update the issue-related status.
 
 ## Start backend server
 
