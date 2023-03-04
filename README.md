@@ -79,7 +79,7 @@ This project is already deployed on the Google Cloud Platform. You can also chec
     gcloud init
     ```
 
-3. Deploy to GCP
+3. Deploy to GCP.
 
     ```bash
     gcloud app deploy
@@ -98,13 +98,13 @@ This project is already deployed on the Google Cloud Platform. You can also chec
     yarn build
     ```
 
-3. Set the configuration and ensure choosing the correct target project for deploying
+3. Set the configuration and ensure choosing the correct target project for deploying.
 
     ```bash
     gcloud init
     ```
 
-4. Deploy to GCP
+4. Deploy to GCP.
 
     ```bash
     gcloud app deploy
