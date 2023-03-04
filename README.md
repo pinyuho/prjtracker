@@ -4,6 +4,8 @@
 
 This project is for managing github issues moe efficiently. Frontend using **React Native** and **TypeScript**. Backend using **JavaScript** and cloud database (**MongoDB** in this project) to save/update the issue-related status.
 
+This project is already deployed on the Google Cloud Platform. You can also check out on https://prjtracker-fe.uc.r.appspot.com.
+
 ## Start backend server
 
 1. Go to the directory.
@@ -71,7 +73,7 @@ This project is for managing github issues moe efficiently. Frontend using **Rea
     cd backend
     ```
 
-2. Set the configuration and ensure choosing the correct target project for deploying
+2. Set the configuration and ensure choosing the correct target project for deploying.
 
     ```bash
     gcloud init
