@@ -67,7 +67,7 @@ const Task = ({
     <div ref={refScroll}>
       <div
         ref={refClick}
-        className={`h-max min-h-[188px] w-full rounded-md bg-zinc-800 p-4 drop-shadow-md md:w-full ${
+        className={`h-max min-h-[230px] w-full rounded-md bg-zinc-800 p-4 drop-shadow-md md:w-full ${
           !showTaskDelete
             ? `hover:cursor-pointer hover:bg-[#5b5e6767]` // regular mode
             : `` // delete mode

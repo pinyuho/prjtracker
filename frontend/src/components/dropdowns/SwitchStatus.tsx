@@ -6,6 +6,7 @@ import useDatabaseApi from "../../hooks/useDatabaseApi";
 import useDropdown from "../../hooks/useDropdown";
 
 import LabelStatus from "../utils/LabelStatus";
+import { useNavigate } from "react-router-dom";
 
 interface FilterStatusTaskProps {
   issueId: number;
@@ -23,6 +24,7 @@ const SwitchStatus = ({
   setIsLoading,
   handleTaskStatusChange
 }: FilterStatusTaskProps) => {
+  const navigate = useNavigate();
   const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
   const { editTaskStatus } = useDatabaseApi();
 
