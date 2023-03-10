@@ -105,7 +105,7 @@ const RepoView = () => {
         >
           <LoadAnimation />
         </div>
-      ) : tasksFiltered.length === 0 ? (
+      ) : tasksFiltered.length === 0 || tasksSearched.length === 0 ? (
         <div className="mt-8 flex h-[450px] items-center justify-center">
           <div className="rounded-lg border-2 border-dashed border-zinc-800 py-1 px-4 text-zinc-500">
             There are no issues.

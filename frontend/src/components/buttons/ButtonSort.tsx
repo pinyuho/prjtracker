@@ -35,7 +35,7 @@ const ButtonSort = ({
         )}
       </button>
       {onHover && !isMobile && (
-        <div className="absolute -m-[52px] h-6 w-max pl-4 text-xs text-zinc-500 opacity-30">
+        <div className="absolute -m-[52px] h-6 w-max pl-4 text-xs text-zinc-100 opacity-30">
           Sort by Creation time
         </div>
       )}

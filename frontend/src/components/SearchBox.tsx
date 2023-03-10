@@ -37,7 +37,8 @@ const SearchBox = ({
       `${inputSearch} is:issue repo:${repoOwner}/${repoName} state:open`
     );
 
-    setLoading(false);
+    setLoading(true);
+
     const data = await searchIssues(queryString);
     const issuesData = data.items;
     if (issuesData.length > 0) {
@@ -61,6 +62,7 @@ const SearchBox = ({
     } else {
       setTasksSearched([]);
     }
+    setLoading(false);
   };
 
   const handleEnterPress = (event: KeyboardEvent) => {
