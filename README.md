@@ -2,7 +2,7 @@
 
 ## About the project
 
-This project is for managing github issues more efficiently. Frontend using **React Native** and **TypeScript**. Backend using **JavaScript** and cloud database (**MongoDB** in this project) to save/update the issue-related status, and also integrate with GitHub API for any other updates (e.g., Add/Edit/Close issues).
+This project is for managing github issues more efficiently. Frontend using **React** and **TypeScript**. Backend using **JavaScript** and cloud database (**MongoDB** in this project) to save/update the issue-related status, and also integrate with GitHub API for any other updates (e.g., Add/Edit/Close issues).
 
 This project is already deployed on the Google Cloud Platform. You can also check out on https://prjtracker-fe.uc.r.appspot.com.
 
