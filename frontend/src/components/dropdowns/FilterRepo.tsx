@@ -1,64 +1,65 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
 import { IRepo } from "../../types";
 
+import { useParams } from "react-router-dom";
+
 import useDropdown from "../../hooks/useDropdown";
-import { useUserContext } from "../../context/UserContext";
+import DropdownOption from "./DropdownOption";
 
 interface FilterRepoProps {
   repos: IRepo[] | undefined;
 }
 
 const FilterRepo = ({ repos }: FilterRepoProps) => {
-  const navigate = useNavigate();
   const { repoOwner, repoName } = useParams();
-
-  const { username } = useUserContext();
   const { ref, isDropdownOpen, setIsDropdownOpen } = useDropdown();
 
+  const allRepo = {
+    id: -1,
+    name: "all-repos",
+    open_issues_count: 0,
+  };
+
+  const options = [allRepo, ...(repos ?? [])];
+
   return (
-    <div ref={ref} className="z-10 mr-3 h-9 self-center">
+    <div ref={ref} className="select-none z-10 mr-3 self-center">
+      {/* Choose a repo button */}
       <div
-        className="w-full rounded bg-[#0000003c] px-6 leading-9 
+        className="w-full h-11 rounded bg-[#0000003c] px-6 leading-9
     opacity-70 shadow-inner shadow-black hover:cursor-pointer hover:opacity-90"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
       >
-        <div className="w-30 mt-[1px] h-full truncate font-mono text-sm leading-9 text-gray-300">
+        <div className="w-30 h-full truncate font-mono text-sm leading-9 text-gray-300 content-center">
           {window.location.pathname === "/" ? `choose a repo` : `/${repoName}`}
         </div>
       </div>
+
       {/* Filter Dropdown */}
       {isDropdownOpen && (
-        <div
+      <div
           className={`scroll-bar absolute mt-1 overflow-y-scroll rounded bg-[#131212] shadow-inner shadow-[#00000099] ${
-            repos !== undefined && repos.length <= 4 ? `h-max ` : `h-[148px] `
+          repos !== undefined && repos.length <= 4 ? `h-max ` : `h-[350px] `
           } ${
-            repos !== undefined &&
-            repos.find((repo) => repo.name.length > 14) /* overflow */
+          repos !== undefined &&
+          repos.find((repo) => repo.name.length > 14) /* overflow */
               ? `w-max `
               : `w-40 `
           }`}
-        >
+      >
           <div className="flex h-max flex-col p-0.5">
             <>
-              {repos?.map((repo) => (
-                <div
+              {options?.map((repo) => (
+                <DropdownOption 
                   key={repo.id}
-                  className="flex h-8 w-full flex-row rounded py-1 px-4 font-mono text-sm leading-6 text-gray-400 text-opacity-90 hover:cursor-pointer hover:bg-zinc-700 active:bg-zinc-800"
-                  onClick={() => {
-                    navigate(`/${username}/${repo.name}`);
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  <div>{repo.name}</div>
-                  <div className="mx-2 rounded bg-zinc-800 px-1.5 opacity-50">
-                    {repo.open_issues_count}
-                  </div>
-                </div>
+                  isAllOption={repo.id === -1}
+                  repo={repo}
+                  setIsDropdownOpen={setIsDropdownOpen}
+                />
               ))}
             </>
           </div>
-        </div>
+      </div>
       )}
     </div>
   );

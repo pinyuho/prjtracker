@@ -9,7 +9,7 @@ import { IIssue, ITask, ITaskRaw } from "../types";
 
 import { IconCustom } from "../context/IconContext";
 
-import useGithubApi from "../hooks/useGithubApi";
+import useGithubAuthApi from "../hooks/useGithubAuthApi";
 import useDatabaseApi from "../hooks/useDatabaseApi";
 
 interface SearchBoxProps {
@@ -29,7 +29,7 @@ const SearchBox = ({
   const [inputSearch, setInputSearch] = useState("");
   const { repoOwner, repoName } = useParams();
 
-  const { searchIssues } = useGithubApi();
+  const { searchIssues } = useGithubAuthApi();
   const { batchReadTasks } = useDatabaseApi();
 
   const fetchSearchIssues = async () => {
@@ -95,20 +95,20 @@ const SearchBox = ({
 
   return (
     <div
-      className={`my-2 mr-2 flex h-8 w-full shrink flex-row ${
+      className={`my-2 mr-2 flex h-10 w-full shrink flex-row ${
         isMobile ? `rounded` : `rounded-r`
       } bg-[#242427] shadow-sm shadow-zinc-700 hover:cursor-text ${className}`}
     >
       {/* Search Icon */}
-      <div className="mx-3 flex h-8 flex-col justify-center">
+      <div className="mx-3 flex h-full flex-col justify-center">
         <IconCustom Icon={BsSearch} color={"grey"} />
       </div>
 
       {/* Input Field */}
       <input
-        className="h-8 w-full bg-transparent text-zinc-200 outline-none ring-0 placeholder:text-sm placeholder:text-zinc-500"
+        className="h-full w-full bg-transparent text-zinc-200 outline-none ring-0 placeholder:text-sm placeholder:text-zinc-500"
         type="text"
-        placeholder="Search..."
+        placeholder="search..."
         onChange={handleInputSearch}
         value={inputSearch}
         onKeyDown={handleEnterPress}

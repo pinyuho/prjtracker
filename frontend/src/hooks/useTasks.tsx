@@ -1,95 +1,142 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
-import { ITask, IIssue, ITaskRaw, TaskStatus } from "../types";
-
+import { IIssue, ITask, ITaskRaw, TaskStatus } from "../types";
 import useDatabaseApi from "./useDatabaseApi";
-import useGithubApi from "./useGithubApi";
+import useGithubAuthApi from "./useGithubAuthApi";
+
+const MAX_PER_PAGE = 6;
+
+function parseRepoFromRepositoryUrl(repositoryUrl?: string): string {
+  // e.g. https://api.github.com/repos/pinyuho/prjtracker -> "prjtracker"
+  if (!repositoryUrl) return "";
+  const parts = repositoryUrl.split("/");
+  return parts[parts.length - 1] || "";
+}
+
+function getRepoNameFromIssue(issue: any): string {
+  // priority: backend normalized field -> GitHub /issues repository object -> repository_url
+  return (
+    issue?.repo ||
+    issue?.repository?.name ||
+    parseRepoFromRepositoryUrl(issue?.repository_url) ||
+    ""
+  );
+}
 
 const useTasks = (pageNumber: number) => {
   const { repoOwner, repoName } = useParams();
-  const [isScrollLoading, setIsScrollLoading] = useState(true);
-  const [tasks, setTasks] = useState<ITask[]>([]);
-  const [hasMore, setHasMore] = useState(false);
+  const { pathname } = useLocation();
 
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+
+  // isLoading: 常用來表示「整體 loading」（你原本 UI 用這個顯示大 loading）
   const [isLoading, setIsLoading] = useState(false);
-  const { getIssues } = useGithubApi();
+
+  // isScrollLoading: 用來表示「滾動載入中」
+  const [isScrollLoading, setIsScrollLoading] = useState(false);
+
+  const { getIssues, getAllIssues } = useGithubAuthApi();
   const { addTasks, batchReadTasks } = useDatabaseApi();
 
+  // 防止同一時間重複打 API（IntersectionObserver 很容易連觸發）
+  const inFlightRef = useRef(false);
+
   const handleTaskStatusChange = (issueId: number, newStatus: TaskStatus) => {
-    const newTasks = [...tasks];
-    const taskToUpdate = newTasks.find(
-      (task: ITask) => task.issueId === issueId
+    setTasks((prev) =>
+      prev.map((t) => (t.issueId === issueId ? { ...t, status: newStatus } : t))
     );
-    if (taskToUpdate) taskToUpdate.status = newStatus;
-    console.log("new tasks:" + newTasks);
-    setTasks(newTasks);
   };
 
-  const fetchIssues = async (
-    firstFetch: boolean,
-    pageNumber: number,
-    repoOwner: string,
-    repoName: string
-  ) => {
-    console.log("Fetching issues...");
-    const issuesData = await getIssues(repoOwner, repoName, 10, pageNumber);
+  const fetchIssues = useCallback(
+    async (firstFetch: boolean, page: number, owner: string, name: string) => {
+      if (inFlightRef.current) return;
+      inFlightRef.current = true;
 
-    if (issuesData.length > 0) {
-      const issueIds = issuesData.map((issue: IIssue) => Number(issue.id));
-      await addTasks(issueIds); // Add task status to database (default: open)
-      const tasksStatusData: any = await batchReadTasks(issueIds);
-      const tasksData = issuesData.map(
-        (issue: IIssue) =>
-          ({
-            issueId: issue.id,
-            title: issue.title,
-            status: tasksStatusData.find(
-              (task: ITaskRaw) => task.issueId === issue.id
-            ).status,
-            createdTime: issue.created_at,
-            body: issue.body,
-            repo: repoName,
-            number: issue.number
-          } as ITask)
-      );
+      // 第一頁：用 isLoading 顯示大 loading；後續頁：用 isScrollLoading 顯示小 loading
+      if (firstFetch) setIsLoading(true);
+      setIsScrollLoading(!firstFetch);
 
-      // First fetch
-      if (firstFetch) setTasks(tasksData);
-      // Fetch more
-      else setTasks((prevTasks: ITask[]) => [...prevTasks, ...tasksData]);
-    }
+      try {
+        let issuesData: IIssue[] = [];
 
-    setIsLoading(false);
+        if (name === "all-repos") {
+          issuesData = (await getAllIssues(MAX_PER_PAGE, page)) ?? [];
+        } else {
+          issuesData = (await getIssues(owner, name, MAX_PER_PAGE, page)) ?? [];
+        }
 
-    setIsScrollLoading(false);
-    setHasMore(issuesData.length > 0);
-    setIsScrollLoading(false);
-  };
+        if (!Array.isArray(issuesData) || issuesData.length === 0) {
+          setHasMore(false);
+          return;
+        }
 
+        const issueIds = issuesData.map((i) => Number(i.id));
+        await addTasks(issueIds);
+
+        const tasksStatusData: ITaskRaw[] = (await batchReadTasks(issueIds)) ?? [];
+        const statusMap = new Map<number, TaskStatus>();
+        for (const t of tasksStatusData) statusMap.set(t.issueId, t.status);
+
+        const tasksData: ITask[] = issuesData.map((issue: any) => ({
+          issueId: issue.id,
+          title: issue.title,
+          status: statusMap.get(issue.id) ?? TaskStatus.Open,
+          createdTime: issue.created_at,
+          body: issue.body,
+          repo: getRepoNameFromIssue(issue),
+          number: issue.number,
+        }));
+
+        setTasks((prev) => {
+          if (firstFetch) return tasksData;
+
+          // 去重：避免同一筆 issue 因為觸發重抓而重複 append
+          const map = new Map<number, ITask>();
+          for (const t of prev) map.set(t.issueId, t);
+          for (const t of tasksData) map.set(t.issueId, t);
+          return Array.from(map.values());
+        });
+
+        setHasMore(issuesData.length === MAX_PER_PAGE);
+      } finally {
+        inFlightRef.current = false;
+        setIsLoading(false);
+        setIsScrollLoading(false);
+      }
+    },
+    [addTasks, batchReadTasks, getAllIssues, getIssues]
+  );
+
+  // ✅ repo / route 變化：reset + 第一頁
   useEffect(() => {
-    setIsScrollLoading(true);
-    if (repoOwner && repoName && pageNumber > 1) {
-      fetchIssues(false, pageNumber, repoOwner, repoName);
-    }
-  }, [pageNumber]);
+    if (!repoOwner || !repoName) return;
 
-  useEffect(() => {
     setTasks([]);
-    setIsScrollLoading(true);
-    setIsLoading(true);
-    if (repoOwner && repoName) {
-      fetchIssues(true, 1, repoOwner, repoName); // first fetch
-    }
-  }, [window.location.pathname]);
+    setHasMore(true);
+
+    // 第一頁抓取
+    fetchIssues(true, 1, repoOwner, repoName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, repoOwner, repoName]);
+
+  // ✅ pageNumber 變化：抓下一頁
+  useEffect(() => {
+    if (!repoOwner || !repoName) return;
+    if (pageNumber <= 1) return;
+    if (!hasMore) return;
+
+    fetchIssues(false, pageNumber, repoOwner, repoName);
+  }, [pageNumber, repoOwner, repoName, hasMore, fetchIssues]);
 
   return {
     tasks,
     hasMore,
     isScrollLoading,
     isLoading,
-    setIsLoading,
-    handleTaskStatusChange
+    setIsLoading, // 保留給你原本的 TaskFilterBar 引用
+    handleTaskStatusChange,
   };
 };
 

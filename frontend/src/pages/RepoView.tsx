@@ -1,54 +1,31 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
-import { ITask, IRepo, TaskStatus } from "../types";
-
+import { ITask, TaskStatus } from "../types";
 import { ascendingOrder, descendingOrder } from "../utils/sortOrder";
+import { useUserContext } from "../context/UserContext";
+
+import useTasks from "../hooks/useTasks";
+
+import TaskFilterBar from "../components/TaskFilterBar";
 import Task from "../components/panels/Task";
 
-import useGithubApi from "../hooks/useGithubApi";
-
-import RepoViewBar from "../components/RepoViewBar";
 import LoadAnimation from "../components/utils/LoadAnimation";
 import ButtonAdd from "../components/buttons/ButtonAdd";
 import ModalEdit from "../components/modals/ModalEdit";
 import ModalAdd from "../components/modals/ModalAdd";
 
-import useTasks from "../hooks/useTasks";
-
 const RepoView = () => {
+  const { repoOwner, repoName } = useParams();
+  const { repos } = useUserContext();
+
   const [pageNumber, setPageNumber] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<TaskStatus>("");
+  const [statusFilter, setStatusFilter] = useState<TaskStatus | null>(null);
 
   const [tasksSearched, setTasksSearched] = useState<ITask[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [tasksFiltered, setTasksFiltered] = useState<ITask[]>([]);
-  const {
-    tasks,
-    hasMore,
-    isScrollLoading,
-    isLoading,
-    setIsLoading,
-    handleTaskStatusChange
-  } = useTasks(pageNumber);
 
-  const observer = useRef<any>();
-  const lastTaskRef = useCallback(
-    (node: Node) => {
-      if (isScrollLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPageNumber((prevPageNumber) => prevPageNumber + 1);
-          console.log("Current page end.");
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [isScrollLoading, hasMore]
-  );
-
-  const [repos, setRepos] = useState<IRepo[]>();
-  const [isDescending, setIsDescending] = useState<boolean>(true);
+  const [isDescending, setIsDescending] = useState(true);
 
   const [editTitle, setEditTitle] = useState("");
   const [editBody, setEditBody] = useState("");
@@ -57,38 +34,70 @@ const RepoView = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
-  const { getRepos } = useGithubApi();
+  // ✅ repo 切換就 reset page（很重要）
+  useEffect(() => {
+    setPageNumber(1);
+    setIsSearching(false);
+    setTasksSearched([]);
+  }, [repoOwner, repoName]);
+
+  const {
+    tasks,
+    hasMore,
+    isScrollLoading,
+    isLoading: isTaskLoading,
+    setIsLoading: setIsTaskLoading,
+    handleTaskStatusChange,
+  } = useTasks(pageNumber);
+
+  // ✅ 不要用 state + effect 去 setTasksFiltered，直接 derived（更乾淨也少一次 render）
+  const tasksFiltered = useMemo(() => {
+    if (!statusFilter) return tasks;
+    return tasks.filter((t) => t.status === statusFilter);
+  }, [tasks, statusFilter]);
+
+  const renderList = useMemo(() => {
+    const base = isSearching ? tasksSearched : tasksFiltered;
+    return base.slice().sort(isDescending ? descendingOrder : ascendingOrder);
+  }, [isSearching, tasksSearched, tasksFiltered, isDescending]);
+
+  // ✅ sentinel observer（最穩）
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lockRef = useRef(false);
+
+  // 當 scroll loading 結束，解除鎖
+  useEffect(() => {
+    if (!isScrollLoading) lockRef.current = false;
+  }, [isScrollLoading]);
 
   useEffect(() => {
-    const fetchRepos = async () => {
-      const data: any = await getRepos();
-      setRepos(data);
-    };
+    const el = sentinelRef.current;
+    if (!el) return;
 
-    setIsLoading(true);
-    if (!repos) {
-      fetchRepos();
-    }
-    setPageNumber(1); // Restore page number
-  }, [window.location.pathname]);
+    if (observerRef.current) observerRef.current.disconnect();
 
-  useEffect(() => {
-    if (statusFilter !== "") {
-      setTasksFiltered(
-        tasks.filter((task: ITask) => task.status === statusFilter)
-      );
-    } else {
-      setTasksFiltered(tasks);
-    }
-  }, [statusFilter]);
+    observerRef.current = new IntersectionObserver((entries) => {
+      const first = entries[0];
+      if (!first?.isIntersecting) return;
 
-  useEffect(() => {
-    if (statusFilter === "") setTasksFiltered(tasks);
-  });
+      // ✅ guard
+      if (!hasMore) return;
+      if (isTaskLoading || isScrollLoading) return;
+      if (lockRef.current) return;
+
+      lockRef.current = true;
+      setPageNumber((p) => p + 1);
+    });
+
+    observerRef.current.observe(el);
+
+    return () => observerRef.current?.disconnect();
+  }, [hasMore, isTaskLoading, isScrollLoading]);
 
   return (
     <div className="flex flex-col">
-      <RepoViewBar
+      <TaskFilterBar
         repos={repos}
         filterStatus={statusFilter}
         setFilterStatus={setStatusFilter}
@@ -96,18 +105,14 @@ const RepoView = () => {
         setIsDescending={setIsDescending}
         setIsSearching={setIsSearching}
         setTasksSearched={setTasksSearched}
-        setLoading={setIsLoading}
+        setLoading={setIsTaskLoading}
       />
 
-      {isLoading ? (
-        <div
-          role="status"
-          className="mt-8 flex h-[450px] items-center justify-center"
-        >
+      {isTaskLoading ? (
+        <div role="status" className="mt-8 flex h-[450px] items-center justify-center">
           <LoadAnimation />
         </div>
-      ) : tasksFiltered.length === 0 ||
-        (isSearching && tasksSearched.length === 0) ? (
+      ) : tasksFiltered.length === 0 || (isSearching && tasksSearched.length === 0) ? (
         <div className="mt-8 flex h-[450px] items-center justify-center">
           <div className="rounded-lg border-2 border-dashed border-zinc-800 py-1 px-4 text-zinc-500">
             There are no issues.
@@ -116,58 +121,34 @@ const RepoView = () => {
       ) : (
         <>
           <div className="mx-8 my-4 grid w-11/12 grid-cols-1 gap-4 self-center sm:grid-cols-2 md:w-[1100px]">
-            {(isSearching ? tasksSearched : tasksFiltered)
-              .sort(isDescending ? descendingOrder : ascendingOrder)
-              .map((task: ITask, index: number) => {
-                if (tasksFiltered.length === index + 1) {
-                  return (
-                    <Task
-                      refScroll={lastTaskRef}
-                      key={task.issueId}
-                      issueId={task.issueId}
-                      title={task.title}
-                      status={task.status}
-                      createdTime={task.createdTime}
-                      body={task.body}
-                      repo={task.repo}
-                      number={task.number}
-                      setIsLoading={setIsLoading}
-                      setShowEditModal={setShowEditModal}
-                      setEditTitle={setEditTitle}
-                      setEditBody={setEditBody}
-                      setEditIssueNumber={setEditIssueNumber}
-                      handleTaskStatusChange={handleTaskStatusChange}
-                    />
-                  );
-                } else {
-                  return (
-                    <Task
-                      key={task.issueId}
-                      issueId={task.issueId}
-                      title={task.title}
-                      status={task.status}
-                      createdTime={task.createdTime}
-                      body={task.body}
-                      repo={task.repo}
-                      number={task.number}
-                      setIsLoading={setIsLoading}
-                      setShowEditModal={setShowEditModal}
-                      setEditTitle={setEditTitle}
-                      setEditBody={setEditBody}
-                      setEditIssueNumber={setEditIssueNumber}
-                      handleTaskStatusChange={handleTaskStatusChange}
-                    />
-                  );
-                }
-              })}
+            {renderList.map((task: ITask) => (
+              <Task
+                showRepo={repoName === "all-repos"}
+                key={task.issueId}
+                issueId={task.issueId}
+                title={task.title}
+                status={task.status}
+                createdTime={task.createdTime}
+                body={task.body}
+                repo={task.repo}
+                number={task.number}
+                setIsLoading={setIsTaskLoading}
+                setShowEditModal={setShowEditModal}
+                setEditTitle={setEditTitle}
+                setEditBody={setEditBody}
+                setEditIssueNumber={setEditIssueNumber}
+                handleTaskStatusChange={handleTaskStatusChange}
+              />
+            ))}
           </div>
-          {isScrollLoading && (
-            <div className="mb-16 text-zinc-400">loading...</div>
-          )}
+
+          {/* ✅ sentinel 放在列表底部 */}
+          <div ref={sentinelRef} style={{ height: 1 }} />
+
+          {isScrollLoading && <div className="mb-16 text-zinc-400">loading...</div>}
         </>
       )}
 
-      {/* Add Task Button */}
       <ButtonAdd onClick={() => setShowAddModal(!showAddModal)} />
       {showAddModal && <ModalAdd setShowAddModal={setShowAddModal} />}
 

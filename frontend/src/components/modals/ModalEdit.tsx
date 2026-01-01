@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import useGithubApi from "../../hooks/useGithubApi";
+import useGithubAuthApi from "../../hooks/useGithubAuthApi";
 import useClickOutside from "../../hooks/useClickOutside";
 
 const MIN_BODY_LENGTH = 30;
@@ -24,7 +24,7 @@ const ModalTask = ({
   const [inputBody, setInputBody] = useState(body);
   const { repoOwner, repoName } = useParams();
 
-  const { updateIssue } = useGithubApi();
+  const { updateIssue } = useGithubAuthApi();
 
   useClickOutside(ref, () => setShowEditModal(false));
   // const [ref, showModal, setShowModal, handleDoneClickModal] = useModal();

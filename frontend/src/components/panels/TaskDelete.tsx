@@ -4,7 +4,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { IconCustom } from "../../context/IconContext";
 
-import useGithubApi from "../../hooks/useGithubApi";
+import useGithubAuthApi from "../../hooks/useGithubAuthApi";
+import { IssueStatus } from "../../types";
 
 interface TaskDeleteProps {
   issueNumber: number;
@@ -19,14 +20,14 @@ const TaskDelete = ({
 }: TaskDeleteProps) => {
   const navigate = useNavigate();
   const { repoOwner, repoName } = useParams();
-  const { deleteIssue } = useGithubApi();
+  const { deleteIssue } = useGithubAuthApi();
 
   const exeDeleteIssue = async (
     repoOwner: string,
     repoName: string,
     issueNumber: number
   ) => {
-    await deleteIssue(repoOwner, repoName, Number(issueNumber), "closed");
+    await deleteIssue(repoOwner, repoName, Number(issueNumber), IssueStatus.Closed);
   };
 
   const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {

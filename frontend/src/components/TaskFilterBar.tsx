@@ -9,10 +9,10 @@ import ButtonSort from "./buttons/ButtonSort";
 
 import useMobile from "../hooks/useMobile";
 
-interface RepoViewBarProps {
+interface TaskFilterBarProps {
   repos: IRepo[] | undefined;
-  filterStatus: TaskStatus;
-  setFilterStatus: (status: TaskStatus) => void;
+  filterStatus: TaskStatus | null;
+  setFilterStatus: (status: TaskStatus | null) => void;
 
   isDescending: boolean;
   setIsDescending: (isDescending: boolean) => void;
@@ -33,7 +33,7 @@ const TaskFilterBar = ({
   setIsSearching,
   setTasksSearched,
   setLoading
-}: RepoViewBarProps) => {
+}: TaskFilterBarProps) => {
   const { isMobile } = useMobile();
   return isMobile ? (
     <div className="mt-[18px] flex w-11/12 flex-col justify-center self-center md:w-[1100px]">
@@ -46,6 +46,7 @@ const TaskFilterBar = ({
           isMobile={isMobile}
         />
       </div>
+      
       <div className="flex flex-row justify-center">
         <div className="mx-1 flex flex-row">
           <div className="my-1 px-2 font-mono text-sm leading-10 text-zinc-500">

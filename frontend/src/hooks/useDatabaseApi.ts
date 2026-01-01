@@ -2,7 +2,7 @@ import { useState } from "react";
 import qs from "qs";
 
 import { AxiosError } from "axios";
-import agent from "../agent";
+import agent from "../api/agent";
 
 import { ITaskRaw, TaskStatus } from "../types";
 
@@ -15,12 +15,7 @@ const useDatabaseApi = () => {
     try {
       const { data } = await agent.post(
         `/db/tasks`,
-        issueIds, // req.body
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          }
-        }
+        issueIds // req.body
       );
       console.log("Post tasks:", data);
       setLoading(false);
@@ -38,11 +33,6 @@ const useDatabaseApi = () => {
       const { data } = await agent.patch(
         `/db/task/${issueId}`,
         { status: taskStatus }, // req.body
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          }
-        }
       );
       console.log("Edited task:", data);
       setLoading(false);
@@ -57,11 +47,7 @@ const useDatabaseApi = () => {
 
   const getTaskStatus = async (issueId: number) => {
     try {
-      const { data } = await agent.get(`/db/task/${issueId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        }
-      });
+      const { data } = await agent.get(`/db/task/${issueId}`);
       console.log("Get task status:", data);
       setLoading(false);
 
@@ -75,12 +61,8 @@ const useDatabaseApi = () => {
 
   const batchReadTasks = async (issueIds: number[]) => {
     try {
-      const { data } = await agent.get(`/db/tasks/${qs.stringify(issueIds)}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        }
-      });
-      console.log("Get task status:", data);
+      const { data } = await agent.get(`/db/tasks/${qs.stringify(issueIds)}`);
+      console.log("Batch get task status:", data);
       setLoading(false);
 
       return data;

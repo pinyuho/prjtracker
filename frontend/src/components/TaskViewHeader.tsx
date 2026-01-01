@@ -4,10 +4,11 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 import { IconCustom } from "../context/IconContext";
 
-import useGithubApi from "../hooks/useGithubApi";
+import useGithubAuthApi from "../hooks/useGithubAuthApi";
 import useMobile from "../hooks/useMobile";
 
 import ModalDelete from "./modals/ModalDelete";
+import { IssueStatus } from "../types";
 
 interface TaskViewHeaderProps {
   title: string;
@@ -37,12 +38,12 @@ const TaskViewHeader = ({
   const { repoOwner, repoName, issueNumber } = useParams();
 
   const [showModal, setShowModal] = useState(false);
-  const { deleteIssue } = useGithubApi();
+  const { deleteIssue } = useGithubAuthApi();
   const { isMobile } = useMobile();
 
   const handleDeleteClick = async () => {
     if (repoOwner && repoName && issueNumber) {
-      await deleteIssue(repoOwner, repoName, Number(issueNumber), "closed");
+      await deleteIssue(repoOwner, repoName, Number(issueNumber), IssueStatus.Closed);
     }
     setShowModal(false);
     navigate(`/${repoOwner}/${repoName}`);

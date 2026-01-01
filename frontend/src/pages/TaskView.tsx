@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import moment from "moment";
 import { IIssue, TaskStatus } from "../types";
 
-import useGithubApi from "../hooks/useGithubApi";
+import useGithubAuthApi from "../hooks/useGithubAuthApi";
 import useDatabaseApi from "../hooks/useDatabaseApi";
 import useMobile from "../hooks/useMobile";
 
@@ -29,12 +29,12 @@ const TaskView = () => {
   const [inputBody, setInputBody] = useState("");
 
   const [createdTime, setCreatedTime] = useState("");
-  const [status, setStatus] = useState<TaskStatus>("");
+  const [status, setStatus] = useState<TaskStatus | null>(null);
 
   const { repoOwner, repoName, issueNumber } = useParams();
   const { isMobile } = useMobile();
 
-  const { isLoading, setIsLoading, getIssue, updateIssue } = useGithubApi();
+  const { isLoading, setIsLoading, getIssue, updateIssue } = useGithubAuthApi();
   const { getTaskStatus } = useDatabaseApi();
 
   useEffect(() => {
@@ -54,13 +54,14 @@ const TaskView = () => {
       setCreatedTime(moment(data.created_at).format("YYYY-MM-DD HH:mm:ss"));
 
       // Fetch task status in database
-      console.log("Now data id: ", data.id);
+      console.log("Now data: ", data);
       const statusObj: any = await getTaskStatus(data.id); // statusObj: status, found
       setStatus(statusObj.status);
     };
 
     setIsLoading(true);
     if (repoOwner && repoName && issueNumber) {
+      console.log("Fetching task: ", repoOwner, repoName, issueNumber);
       fetchTask(repoOwner, repoName, Number(issueNumber));
     }
   }, []);

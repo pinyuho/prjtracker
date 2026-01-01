@@ -22,7 +22,7 @@ const ButtonSort = ({
   return (
     <div className={`self-center ${className}`}>
       <button
-        className="ml-1 flex h-8 w-12 justify-center rounded bg-zinc-800 text-zinc-300 opacity-80 
+        className="ml-1 flex h-10 w-12 justify-center rounded bg-zinc-800 text-zinc-300 opacity-80 
      shadow-sm shadow-zinc-700 outline-none ring-0 hover:bg-zinc-700 "
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
@@ -35,8 +35,8 @@ const ButtonSort = ({
         )}
       </button>
       {onHover && !isMobile && (
-        <div className="absolute -m-[52px] h-6 w-max pl-4 text-xs text-zinc-100 opacity-30">
-          Sort by Creation time
+        <div className="absolute -m-[65px] h-6 w-max pl-7 text-xs text-zinc-100 opacity-30 content-center">
+          {isDescending ? "change to ascending" : "change to descending"}
         </div>
       )}
     </div>

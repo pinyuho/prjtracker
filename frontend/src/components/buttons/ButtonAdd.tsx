@@ -8,7 +8,7 @@ interface ButtonAddProps {
   onClick: () => void;
 }
 
-const ButtonSort = ({ onClick }: ButtonAddProps) => {
+const ButtonAdd = ({ onClick }: ButtonAddProps) => {
   return (
     <div
       className="leading-12 fixed right-12 bottom-12 flex h-12 w-12 justify-center rounded-md bg-zinc-700 opacity-60 shadow-lg shadow-black hover:cursor-pointer hover:opacity-90"
@@ -23,4 +23,4 @@ const ButtonSort = ({ onClick }: ButtonAddProps) => {
   );
 };
 
-export default ButtonSort;
+export default ButtonAdd;

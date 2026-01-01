@@ -7,10 +7,11 @@ import useDropdown from "../../hooks/useDropdown";
 
 import LabelStatus from "../utils/LabelStatus";
 import { useNavigate } from "react-router-dom";
+import Task from "../panels/Task";
 
 interface FilterStatusTaskProps {
   issueId: number;
-  status: TaskStatus;
+  status: TaskStatus | null;
 
   setStatus?: (status: TaskStatus) => void;
   setIsLoading?: (loading: boolean) => void;
@@ -55,19 +56,19 @@ const SwitchStatus = ({
   };
 
   const handleInProgressClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    handleClick("in-progress");
+    handleClick(TaskStatus.InProgress);
     e.stopPropagation();
     // navigate(0); // refresh page: TaskView
   };
 
   const handleOpenClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    handleClick("open");
+    handleClick(TaskStatus.Open);
     e.stopPropagation();
     // navigate(0); // refresh page: TaskView
   };
 
   const handleDoneClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    handleClick("done");
+    handleClick(TaskStatus.Done);
     e.stopPropagation();
     // navigate(0); // refresh page: TaskView
   };
@@ -76,11 +77,11 @@ const SwitchStatus = ({
     <div ref={ref}>
       {/* Filter Button */}
       <div
-        className="ml-1 flex h-7 w-max flex-row justify-between rounded border-zinc-700 bg-transparent px-1 
+        className="ml-1 flex h-full w-max flex-row justify-between rounded border-zinc-700 bg-transparent px-1 
         text-zinc-300 opacity-80 outline-none ring-0 hover:bg-zinc-700 "
       >
-        <button className="h-full w-full" onClick={handleHeaderClick}>
-          {status === "" ? (
+        <button className="w-full" onClick={handleHeaderClick}>
+          {status === null ? (
             <div className="flex w-full justify-center p-0.5">-</div>
           ) : (
             <LabelStatus status={status} />
@@ -95,19 +96,19 @@ const SwitchStatus = ({
             className="rounded px-2 hover:bg-zinc-500"
             onClick={handleInProgressClick}
           >
-            <LabelStatus status="in-progress" />
+            <LabelStatus status={TaskStatus.InProgress} />
           </button>
           <button
             className="rounded px-2 hover:bg-zinc-500"
             onClick={handleOpenClick}
           >
-            <LabelStatus status="open" />
+            <LabelStatus status={TaskStatus.Open} />
           </button>
           <button
             className="rounded px-2 hover:bg-zinc-500"
             onClick={handleDoneClick}
           >
-            <LabelStatus status="done" />
+            <LabelStatus status={TaskStatus.Done} />
           </button>
         </div>
       )}

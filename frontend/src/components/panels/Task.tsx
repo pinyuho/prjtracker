@@ -16,6 +16,7 @@ import TaskDelete from "./TaskDelete";
 import { TaskStatus } from "../../types";
 
 export interface TaskProps {
+  showRepo?: boolean;
   refScroll?: any;
   issueId: number;
   title: string;
@@ -37,6 +38,7 @@ export interface TaskProps {
 }
 
 const Task = ({
+  showRepo = false,
   refScroll,
   issueId,
   title,
@@ -79,6 +81,12 @@ const Task = ({
         }}
       >
         {/* Task Header */}
+        {/* Repo name (only on all-repos page) */}
+        {showRepo && (
+          <div className="mt-0.5 mb-2 h-max w-11/12 text-left font-mono font-medium leading-6 text-gray-600 line-clamp-2">
+            {"repo: " + repo}
+          </div>
+        )}
         <div className="flex h-max justify-between">
           {/* Title */}
           <div className="mt-0.5 mb-2 h-max w-11/12 text-left font-mono font-medium leading-6 text-white line-clamp-2">

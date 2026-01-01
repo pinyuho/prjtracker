@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import useGithubApi from "../../hooks/useGithubApi";
+import useGithubAuthApi from "../../hooks/useGithubAuthApi";
 import useOnClickOutside from "../../hooks/useClickOutside";
 
 const MIN_BODY_LENGTH = 30;
@@ -19,7 +19,7 @@ const ModalAdd = ({ setShowAddModal }: ModalAddProps) => {
   const [inputTitle, setInputTitle] = useState("");
   const [inputBody, setInputBody] = useState("");
 
-  const { addIssue } = useGithubApi();
+  const { addIssue } = useGithubAuthApi();
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();

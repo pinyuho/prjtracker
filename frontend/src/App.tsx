@@ -5,33 +5,30 @@ import "./App.css";
 import Header from "./components/Header";
 
 import Login from "./pages/Login";
-import Home from "./pages/Home";
 import RepoView from "./pages/RepoView";
 import TaskView from "./pages/TaskView";
 
 import { useUserContext } from "./context/UserContext";
+import AuthLayout from "./routes/AuthLayout";
 
 function App() {
-  const { username, avatarUrl } = useUserContext();
+  const { loggedIn, authLoading } = useUserContext();
 
   return (
     <div className="App">
-      <Header isLoggedIn={localStorage.getItem("accessToken") ? true : false} />
+      <Header />
 
       <Routes>
         <Route
           path="/login"
-          element={!(username || avatarUrl) ? <Login /> : <Navigate to="/" />}
+          element={authLoading ? null : (!loggedIn ? <Login /> : <Navigate to="/" replace />)}
         />
-        <Route
-          path="/"
-          element={username && avatarUrl ? <Home /> : <Navigate to="/login" />}
-        />
-        <Route path="/:repoOwner/:repoName" element={<RepoView />} />
-        <Route
-          path="/:repoOwner/:repoName/:issueNumber"
-          element={<TaskView />}
-        />
+
+        <Route element={<AuthLayout />}>
+          <Route path="/" element={<RepoView />} />
+          <Route path="/:repoOwner/:repoName" element={<RepoView />} />
+          <Route path="/:repoOwner/:repoName/:issueNumber" element={<TaskView />} />
+        </Route>
       </Routes>
     </div>
   );

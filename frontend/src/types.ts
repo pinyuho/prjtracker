@@ -1,6 +1,13 @@
-export type TaskStatus = "open" | "in-progress" | "done" | "";
-export type IssueStatus = "open" | "closed";
+export enum TaskStatus {
+  Open = "open",
+  InProgress = "in-progress",
+  Done = "done",
+}
 
+export enum IssueStatus {
+  Open = "open",
+  Closed = "closed",
+}
 export interface ITaskRaw {
   issueId: number;
   status: TaskStatus;
@@ -28,10 +35,11 @@ export interface IIssue {
   title: string;
   created_at: Date;
   body: string;
-  state: "open" | "closed"; // default: "open"
+  state: IssueStatus; // default: "open"
   labels: string[];
   number: number;
   html_url: string;
+  repo: string;
 }
 
 export interface IRepo {
